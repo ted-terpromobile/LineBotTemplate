@@ -58,7 +58,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if commandArray[0] != "roll" {
 					break
 				}
-				number, parseErr := strconv.ParseInt(commandArray[2], 10, 8)
+				number, parseErr := strconv.Atoi(commandArray[2])
 				if parseErr != nil {
 					break
 				}
