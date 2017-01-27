@@ -17,6 +17,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
+	"strconv"
+	"math/rand"
+	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -49,7 +53,29 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text+" 是什麼意思我聽不懂QAQ")).Do(); err != nil {
+				
+				commandArray := strings.Split(message.Text, " ")
+				if commandArray[0] != "roll" {
+					break
+				}
+				number, parseErr := strconv.ParseInt(commandArray[2], 10, 8)
+				if parseErr != nil {
+					break
+				}
+				
+				rand.Seed(time.Now().UnixNano())   
+        			dice := rand.Intn(100) + 1  
+				
+				var replyString string
+				replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
+				
+				if dice > number {
+					replyString = replyString + " 失敗"
+				} else {
+					replyString = replyString + " 成功"
+				}
+				
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
 					log.Print(err)
 				}
 			}
