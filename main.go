@@ -87,7 +87,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							if parseDiceTypeErr != nil {
 								break messageSwitch
 							}
-							replyString = replyString + "("
+							if diceNumber > 1 {
+								replyString = replyString + "("
+							}
 							for i :=0 ; i < diceNumber ; i++ {
 								diceEachResult := rand.Intn(diceType) + 1
 								sum = sum + diceEachResult
@@ -96,14 +98,19 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									replyString = replyString + "+"
 								}
 							}
-							replyString = replyString + ")"
+							if diceNumber > 1 {
+								replyString = replyString + ")"
+							}
 						}
 						
 						if index != (len(diceArray) - 1) {
 							replyString = replyString + "+"
 						}
 					}
-					replyString = replyString + "→" + strconv.Itoa(sum)
+					if len(diceArray) > 1 {
+						replyString = replyString + "→"
+					}
+					replyString = replyString + strconv.Itoa(sum)
 				}else{
 				
 					number, parseErr := strconv.Atoi(commandArray[2])
