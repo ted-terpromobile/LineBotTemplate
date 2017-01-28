@@ -108,9 +108,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						}
 					}
 					if len(diceArray) > 1 {
-						replyString = replyString + "→"
+						replyString = replyString + "→" + strconv.Itoa(sum)
 					}
-					replyString = replyString + strconv.Itoa(sum)
 				}else{
 				
 					number, parseErr := strconv.Atoi(commandArray[2])
