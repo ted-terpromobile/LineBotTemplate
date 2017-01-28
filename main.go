@@ -51,6 +51,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
+			messageSwitch:
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				
@@ -58,21 +59,66 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if commandArray[0] != "roll" {
 					break
 				}
-				number, parseErr := strconv.Atoi(commandArray[2])
-				if parseErr != nil {
-					break
-				}
-				
-				rand.Seed(time.Now().UnixNano())   
-        			dice := rand.Intn(100) + 1  
-				
+				rand.Seed(time.Now().UnixNano())
 				var replyString string
-				replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
+				if len(commandArray) == 2 {
+					replyString = commandArray[1] + "→"
+					diceArray := strings.Split(commandArray[1], "+")
+					var sum int = 0
+					for index, dice := range diceArray {
+
+						diceForamt := strings.Split(dice, "D")
+						if len(diceForamt) > 2 {
+							break messageSwitch
+						}
+						if len(diceForamt) == 1 {
+							number, parseErr := strconv.Atoi(dice)
+							if parseErr != nil {
+								break messageSwitch
+							}
+							replyString = replyString + dice
+							sum = sum + number
+						}else{
+							diceNumber, parseDiceNumberErr := strconv.Atoi(diceForamt[0])
+							if parseDiceNumberErr != nil {
+								break messageSwitch
+							}
+							diceType, parseDiceTypeErr := strconv.Atoi(diceForamt[1])
+							if parseDiceTypeErr != nil {
+								break messageSwitch
+							}
+							replyString = replyString + "("
+							for i :=0 ; i < diceNumber ; i++ {
+								diceEachResult := rand.Intn(diceType) + 1
+								sum = sum + diceEachResult
+								replyString = replyString + strconv.Itoa(diceEachResult)
+								if i != (diceNumber - 1) {
+									replyString = replyString + "+"
+								}
+							}
+							replyString = replyString + ")"
+						}
+						
+						if index != (len(diceArray) - 1) {
+							replyString = replyString + "+"
+						}
+					}
+					replyString = replyString + "→" + strconv.Itoa(sum)
+				}else{
 				
-				if dice > number {
-					replyString = replyString + " 失敗"
-				} else {
-					replyString = replyString + " 成功"
+					number, parseErr := strconv.Atoi(commandArray[2])
+					if parseErr != nil {
+						break
+					}
+
+					dice := rand.Intn(100) + 1  
+					replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
+
+					if dice > number {
+						replyString = replyString + " 失敗"
+					} else {
+						replyString = replyString + " 成功"
+					}
 				}
 				
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
