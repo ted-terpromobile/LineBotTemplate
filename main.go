@@ -64,6 +64,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if len(commandArray) == 2 {
 					replyString = commandArray[1] + "→"
 					diceArray := strings.Split(commandArray[1], "+")
+					multiFlag := len(diceArray) > 1
 					var sum int = 0
 					for index, dice := range diceArray {
 
@@ -88,6 +89,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								break messageSwitch
 							}
 							if diceNumber > 1 {
+								multiFlag = true
 								replyString = replyString + "("
 							}
 							for i :=0 ; i < diceNumber ; i++ {
@@ -107,7 +109,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							replyString = replyString + "+"
 						}
 					}
-					if len(diceArray) > 1 {
+					if multiFlag {
 						replyString = replyString + "→" + strconv.Itoa(sum)
 					}
 				}else{
