@@ -51,7 +51,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
-			messageSwitch:
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				
@@ -62,55 +61,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				rand.Seed(time.Now().UnixNano())
 				var replyString string
 				if len(commandArray) == 2 {
-					replyString = commandArray[1] + "→"
-					diceArray := strings.Split(commandArray[1], "+")
-					multiFlag := len(diceArray) > 1
-					var sum int = 0
-					for index, dice := range diceArray {
-
-						diceForamt := strings.Split(dice, "D")
-						if len(diceForamt) > 2 {
-							break messageSwitch
-						}
-						if len(diceForamt) == 1 {
-							number, parseErr := strconv.Atoi(dice)
-							if parseErr != nil {
-								break messageSwitch
-							}
-							replyString = replyString + dice
-							sum = sum + number
-						}else{
-							diceNumber, parseDiceNumberErr := strconv.Atoi(diceForamt[0])
-							if parseDiceNumberErr != nil {
-								break messageSwitch
-							}
-							diceType, parseDiceTypeErr := strconv.Atoi(diceForamt[1])
-							if parseDiceTypeErr != nil {
-								break messageSwitch
-							}
-							if diceNumber > 1 {
-								multiFlag = true
-								replyString = replyString + "("
-							}
-							for i :=0 ; i < diceNumber ; i++ {
-								diceEachResult := rand.Intn(diceType) + 1
-								sum = sum + diceEachResult
-								replyString = replyString + strconv.Itoa(diceEachResult)
-								if i != (diceNumber - 1) {
-									replyString = replyString + "+"
-								}
-							}
-							if diceNumber > 1 {
-								replyString = replyString + ")"
-							}
-						}
-						
-						if index != (len(diceArray) - 1) {
-							replyString = replyString + "+"
-						}
-					}
-					if multiFlag {
-						replyString = replyString + "→" + strconv.Itoa(sum)
+					replyString = parseDiceArray(commandArray[1])
+					if replyString == nil {
+						return
 					}
 				}else{
 				
@@ -127,6 +80,21 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					} else {
 						replyString = replyString + " 成功"
 					}
+					
+					if commandArray[1] == "san" && len(commandArray) > 3 {
+						detectArray := strings.Split(commandArray[2], "/")
+						if len(detectArray) == 2 {
+							replyString = replyString + "\n"
+							var detectString string
+							if dice > number {
+								detectString = detectArray[1]
+							} else {
+								detectString = detectArray[0]
+							}
+							diceResultString,diceResultInt := parseDiceArray(detectString)
+							replyString = replyString + diceResultString + "\n《目前san值》" + strconv.Itoa(number) + "→" + strconv.Itoa(number - diceResultInt)
+						}
+					}
 				}
 				
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
@@ -135,4 +103,62 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+func parseDiceArray(diceArrayString string) (replyString string,sum int){
+	replyString := diceArrayString + "→"
+	diceArray := strings.Split(commandArray[1], "+")
+	multiFlag := len(diceArray) > 1
+	var sum int = 0
+	for index, dice := range diceArray {
+
+		diceForamt := strings.Split(dice, "D")
+		if len(diceForamt) > 2 {
+			replyString = nil
+			return
+		}
+		if len(diceForamt) == 1 {
+			number, parseErr := strconv.Atoi(dice)
+			if parseErr != nil {
+				replyString = nil
+				return
+			}
+			replyString = replyString + dice
+			sum = sum + number
+		}else{
+			diceNumber, parseDiceNumberErr := strconv.Atoi(diceForamt[0])
+			if parseDiceNumberErr != nil {
+				replyString = nil
+				return
+			}
+			diceType, parseDiceTypeErr := strconv.Atoi(diceForamt[1])
+			if parseDiceTypeErr != nil {
+				replyString = nil
+				return
+			}
+			if diceNumber > 1 {
+				multiFlag = true
+				replyString = replyString + "("
+			}
+			for i :=0 ; i < diceNumber ; i++ {
+				diceEachResult := rand.Intn(diceType) + 1
+				sum = sum + diceEachResult
+				replyString = replyString + strconv.Itoa(diceEachResult)
+				if i != (diceNumber - 1) {
+					replyString = replyString + "+"
+				}
+			}
+			if diceNumber > 1 {
+				replyString = replyString + ")"
+			}
+		}
+
+		if index != (len(diceArray) - 1) {
+			replyString = replyString + "+"
+		}
+	}
+	if multiFlag {
+		replyString = replyString + "→" + strconv.Itoa(sum)
+	}
+	return 
 }
