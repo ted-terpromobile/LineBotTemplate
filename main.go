@@ -81,7 +81,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					//	break
 					//}
 					//replyString = replyString + diceResultString
-					replyString = replyString + "修理中"
+					replyString = replyString + " 修理中"
 				}else{
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
