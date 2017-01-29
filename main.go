@@ -76,11 +76,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				
 				if len(commandArray) == 2 {
-					diceResultString,_ := parseDiceArray(commandArray[1])
-					if diceResultString == ""{
-						break
-					}
-					replyString = replyString + diceResultString
+					//diceResultString,_ := parseDiceArray(commandArray[1])
+					//if diceResultString == ""{
+					//	break
+					//}
+					//replyString = replyString + diceResultString
+					replyString = replyString + "修理中"
 				}else{
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
