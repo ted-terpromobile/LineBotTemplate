@@ -82,7 +82,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					
 					if commandArray[1] == "san" && len(commandArray) > 3 {
-						detectArray := strings.Split(commandArray[2], "/")
+						detectArray := strings.Split(commandArray[3], "/")
 						if len(detectArray) == 2 {
 							replyString = replyString + "\n"
 							var detectString string
