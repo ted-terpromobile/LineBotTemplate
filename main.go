@@ -60,13 +60,25 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				rand.Seed(time.Now().UnixNano())
 				var replyString string
+				if commandArray[2] == "vs" && len(commandArray) == 4{
+					selfForce, parseSelfErr := strconv.Atoi(commandArray[1])
+					if parseSelfErr != nil {
+						break
+					}
+					targetForce, parseTargetErr := strconv.Atoi(commandArray[3])
+					if parseTargetErr != nil {
+						break
+					}
+					commandArray[1] = "對抗"
+					commandArray[2] = strconv.Itoa(50 + ((selfForce - targetForce) * 5))
+				}
+				
 				if len(commandArray) == 2 {
 					replyString,_ = parseDiceArray(commandArray[1])
 					if replyString == "" {
 						return
 					}
 				}else{
-				
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
 						break
