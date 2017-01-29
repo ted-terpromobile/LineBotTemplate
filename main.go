@@ -61,7 +61,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				rand.Seed(time.Now().UnixNano())
 				var replyString string
 				if len(commandArray) == 2 {
-					replyString = parseDiceArray(commandArray[1])
+					replyString,_ = parseDiceArray(commandArray[1])
 					if replyString == "" {
 						return
 					}
@@ -106,10 +106,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseDiceArray(diceArrayString string) (replyString string,sum int){
-	replyString := diceArrayString + "→"
+	replyString = diceArrayString + "→"
 	diceArray := strings.Split(commandArray[1], "+")
 	multiFlag := len(diceArray) > 1
-	var sum int = 0
+	sum = 0
 	for index, dice := range diceArray {
 
 		diceForamt := strings.Split(dice, "D")
