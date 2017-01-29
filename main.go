@@ -61,7 +61,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				rand.Seed(time.Now().UnixNano())
 				var replyString string
 				isCheckTypeFlag := true
-				if commandArray[2] == "vs" && len(commandArray) == 4{
+				if len(commandArray) == 4 && commandArray[2] == "vs"{
 					selfForce, parseSelfErr := strconv.Atoi(commandArray[1])
 					if parseSelfErr != nil {
 						break
@@ -76,12 +76,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				
 				if len(commandArray) == 2 {
-					//diceResultString,_ := parseDiceArray(commandArray[1])
-					//if diceResultString == ""{
-					//	break
-					//}
-					//replyString = replyString + diceResultString
-					replyString = replyString + " 修理中"
+					replyString,_ = parseDiceArray(commandArray[1])
+					if replyString == ""{
+						break
+					}
 				}else{
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
