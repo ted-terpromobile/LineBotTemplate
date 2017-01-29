@@ -107,7 +107,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 func parseDiceArray(diceArrayString string) (replyString string,sum int){
 	replyString = diceArrayString + "→"
-	diceArray := strings.Split(commandArray[1], "+")
+	diceArray := strings.Split(diceArrayString, "+")
 	multiFlag := len(diceArray) > 1
 	sum = 0
 	for index, dice := range diceArray {
