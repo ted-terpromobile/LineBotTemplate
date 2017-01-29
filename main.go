@@ -76,11 +76,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				
 				if len(commandArray) == 2 {
-					var sum int
-					replyString,sum = parseDiceArray(commandArray[1])
-					if replyString == "" || sum < 0 {
-						return
+					diceResultString,_ := parseDiceArray(commandArray[1])
+					if diceResultString == ""{
+						break
 					}
+					replyString = replyString + diceResultString
 				}else{
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
