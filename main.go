@@ -60,6 +60,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				rand.Seed(time.Now().UnixNano())
 				var replyString string
+				isCheckTypeFlag := true
 				if commandArray[2] == "vs" && len(commandArray) == 4{
 					selfForce, parseSelfErr := strconv.Atoi(commandArray[1])
 					if parseSelfErr != nil {
@@ -71,6 +72,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					commandArray[1] = "對抗"
 					commandArray[2] = strconv.Itoa(50 + ((selfForce - targetForce) * 5))
+					isCheckTypeFlag = false
 				}
 				
 				if len(commandArray) == 2 {
@@ -83,28 +85,44 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					if parseErr != nil {
 						break
 					}
-
-					dice := rand.Intn(100) + 1  
-					replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
-
-					if dice > number {
-						replyString = replyString + " 失敗"
-					} else {
-						replyString = replyString + " 成功"
-					}
-					
-					if commandArray[1] == "san" && len(commandArray) > 3 {
-						detectArray := strings.Split(commandArray[3], "/")
-						if len(detectArray) == 2 {
-							replyString = replyString + "\n"
-							var detectString string
-							if dice > number {
-								detectString = detectArray[1]
-							} else {
-								detectString = detectArray[0]
+					if number >= 100 {
+						replyString = replyString + " 自動成功"
+					}else if number <= 0 {
+						replyString = replyString + " 自動失敗"
+					}else{
+						dice := rand.Intn(100) + 1  
+						replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
+						
+						isCheckTypeFlag = isCheckTypeFlag && !(commandArray[1] == "san" && len(commandArray) > 3)
+						if dice > number {
+							if isCheckTypeFlag && dice > 95 {
+								replyString = replyString + " 大失敗"
+							}else{
+								replyString = replyString + " 失敗"
 							}
-							diceResultString,diceResultInt := parseDiceArray(detectString)
-							replyString = replyString + diceResultString + "\n《目前san值》" + strconv.Itoa(number) + "→" + strconv.Itoa(number - diceResultInt)
+						} else {
+							if isCheckTypeFlag && dice == 1 {
+								replyString = replyString + " 大成功"
+							}else if isCheckTypeFlag && dice <= number / 5 {
+								replyString = replyString + " 特別成功"
+							}else{
+								replyString = replyString + " 成功"
+							}
+						}
+					
+						if commandArray[1] == "san" && len(commandArray) > 3 {
+							detectArray := strings.Split(commandArray[3], "/")
+							if len(detectArray) == 2 {
+								replyString = replyString + "\n"
+								var detectString string
+								if dice > number {
+									detectString = detectArray[1]
+								} else {
+									detectString = detectArray[0]
+								}
+								diceResultString,diceResultInt := parseDiceArray(detectString)
+								replyString = replyString + diceResultString + "\n《目前san值》" + strconv.Itoa(number) + "→" + strconv.Itoa(number - diceResultInt)
+							}
 						}
 					}
 				}
