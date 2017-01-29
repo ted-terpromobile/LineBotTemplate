@@ -78,7 +78,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if len(commandArray) == 2 {
 					var sum int
 					replyString,sum = parseDiceArray(commandArray[1])
-					if replyString == "" {
+					if replyString == "" || sum < 0 {
 						return
 					}
 				}else{
