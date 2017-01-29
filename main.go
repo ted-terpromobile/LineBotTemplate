@@ -62,7 +62,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				var replyString string
 				if len(commandArray) == 2 {
 					replyString = parseDiceArray(commandArray[1])
-					if replyString == nil {
+					if replyString == "" {
 						return
 					}
 				}else{
@@ -114,13 +114,13 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 
 		diceForamt := strings.Split(dice, "D")
 		if len(diceForamt) > 2 {
-			replyString = nil
+			replyString = ""
 			return
 		}
 		if len(diceForamt) == 1 {
 			number, parseErr := strconv.Atoi(dice)
 			if parseErr != nil {
-				replyString = nil
+				replyString = ""
 				return
 			}
 			replyString = replyString + dice
@@ -128,12 +128,12 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 		}else{
 			diceNumber, parseDiceNumberErr := strconv.Atoi(diceForamt[0])
 			if parseDiceNumberErr != nil {
-				replyString = nil
+				replyString = ""
 				return
 			}
 			diceType, parseDiceTypeErr := strconv.Atoi(diceForamt[1])
 			if parseDiceTypeErr != nil {
-				replyString = nil
+				replyString = ""
 				return
 			}
 			if diceNumber > 1 {
