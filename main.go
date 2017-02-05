@@ -56,6 +56,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				if commandArray[0] != "roll" {
+					if commandArray[0] == "ㄌㄌ" {
+						noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
+						if strings.Contains(commandArray[1], "自我介紹"){
+							noDiceReplyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子! 擲出壞數字也不可以怪我喔!"    						
+						}
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(noDiceReplyString)).Do(); err != nil {
+							log.Print(err)
+						}
+					}					
 					break
 				}
 				rand.Seed(time.Now().UnixNano())
