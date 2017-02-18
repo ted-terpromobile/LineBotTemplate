@@ -77,10 +77,21 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							"《對抗指令》\n" +
 							"假設我要暴力開門，我力量10，門的抵抗力量5，就輸入：\n" +
 							"roll 10 vs 5\n" +
-							"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力"
+							"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力）"
+				}
+				if event.Postback.Data == "exit"{
+					replyString = "掰掰!"
 				}
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
 					log.Print(err)
+				}
+				if event.Postback.Data == "exit"{
+					switch source.Type {
+						case linebot.EventSourceTypeGroup:
+							if _, err := app.bot.LeaveGroup(source.GroupID).Do()
+						case linebot.EventSourceTypeRoom:
+							if _, err := app.bot.LeaveRoom(source.RoomID).Do()
+					}
 				}
 		}
 		if event.Type == linebot.EventTypeMessage {
@@ -111,6 +122,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							imageURL, "ㄌㄌ", displayName + "有什麼事嗎?",
 							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", ""),
 							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明",""),
+							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit",""),
 						)
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
