@@ -26,6 +26,7 @@ import (
 )
 
 var bot *linebot.Client
+appBaseURL := "https://lolilinebot.herokuapp.com"
 
 func main() {
 	var err error
@@ -69,7 +70,42 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						//	log.Print(err)
 						//}
 						
+						if source.UserID == "" {
+							return
+						}							
+						profile, err := app.bot.GetProfile(event.Source.UserID).Do()
+						if err != nil {
+							return
+						}
 						
+						imageURL := appBaseURL + "/images/1oli.jpg"
+						template := linebot.NewButtonsTemplate(
+							imageURL, "ㄌㄌ", profile.DisplayName + "有什麼事嗎?",
+							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"),
+							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明", 
+											  	"《一般擲骰指令》\n" +
+											  	"假設我要骰3次20面骰，然後數值再加1，就輸入：\n" +
+												"roll 3D20+1\n" +
+												"（roll 空格 骰子表示法）\n" +
+											  	"《一般技能指令》\n" +
+											  	"假設我要骰觀察，我的觀察有60，就輸入：\n" +
+												"roll 觀察 60\n" +
+												"（roll 空格 技能名稱 空格 技能數值）\n" +
+												"《SanCheck指令》\n" +
+												"假設我san40，然後KP說1/1D8，就輸入：\n" +
+												"roll san 40 1/1D8\n" +
+												"（roll 空格 san 空格 san的數值 空格 sancheck數值）\n" +
+												"《對抗指令》\n" +
+												"假設我要暴力開門，我力量10，門的抵抗力量5，就輸入：\n" +
+												"roll 10 vs 5\n" +
+												"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力"),
+						)
+						if _, err := app.bot.ReplyMessage(
+							replyToken,
+							linebot.NewTemplateMessage("Buttons alt text", template),
+						).Do(); err != nil {
+							return err
+						}
 					}					
 					break
 				}
