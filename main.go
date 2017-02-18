@@ -71,17 +71,17 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						//	log.Print(err)
 						//}
 						
-						if event.Source.UserID == "" {
-							return
+						displayName := ""
+						if event.Source.UserID != "" {
+							profile, err := bot.GetProfile(event.Source.UserID).Do()
+							if err == nil {
+								displayName = profile.DisplayName
+							}
 						}							
-						profile, err := bot.GetProfile(event.Source.UserID).Do()
-						if err != nil {
-							return
-						}
-						
+
 						imageURL := appBaseURL + "/images/loli.jpg"
 						template := linebot.NewButtonsTemplate(
-							imageURL, "ㄌㄌ", profile.DisplayName + "有什麼事嗎?",
+							imageURL, "ㄌㄌ", displayName + "有什麼事嗎?",
 							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"),
 							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明", 
 											  	"《一般擲骰指令》\n" +
