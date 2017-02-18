@@ -86,7 +86,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					log.Print(err)
 				}
 				if event.Postback.Data == "exit"{
-					switch source.Type {
+					switch event.Source.Type {
 						case linebot.EventSourceTypeGroup:
 							if _, err := app.bot.LeaveGroup(source.GroupID).Do()
 						case linebot.EventSourceTypeRoom:
