@@ -102,8 +102,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 												"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力"),
 						)
 						if _, err := bot.ReplyMessage(
-							replyToken,
-							linebot.NewTemplateMessage("Buttons alt text", template),
+							event.ReplyToken,
+							linebot.NewTemplateMessage("請到手機上接收訊息", template),
 						).Do(); err != nil {
 							return
 						}
