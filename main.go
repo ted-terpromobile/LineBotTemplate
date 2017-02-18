@@ -56,10 +56,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, event := range events {
-		if event.Type == linebot.EventTypeMessage {
-			switch message := event.Message.(type) {
-				
-			case linebot.EventTypePostback:
+		if event.Type == linebot.EventTypePostback {
 				replyString := ""
 				if event.Postback.Data == "自我介紹"{
 					replyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
@@ -85,8 +82,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
 					log.Print(err)
 				}
-				
-				
+		}
+		if event.Type == linebot.EventTypeMessage {
+			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
 				
 				commandArray := strings.Split(message.Text, " ")
