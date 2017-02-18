@@ -79,7 +79,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 						
-						imageURL := appBaseURL + "/images/1oli.jpg"
+						imageURL := appBaseURL + "/images/loli.jpg"
 						template := linebot.NewButtonsTemplate(
 							imageURL, "ㄌㄌ", profile.DisplayName + "有什麼事嗎?",
 							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"),
@@ -103,7 +103,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						)
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
-							linebot.NewTemplateMessage("請到手機上接收訊息", template),
+							linebot.NewTemplateMessage("有什麼事嗎?", template),
 						).Do(); err != nil {
 							return
 						}
