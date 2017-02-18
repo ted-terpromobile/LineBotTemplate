@@ -58,6 +58,35 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
+				
+			case linebot.EventTypePostback:
+				replyString := ""
+				if event.Postback.Data == "自我介紹"{
+					replyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
+				}
+				if event.Postback.Data == "說明"{
+					replyString = 	"《一般擲骰指令》\n" +
+							"假設我要骰3次20面骰，然後數值再加1，就輸入：\n" +
+							"roll 3D20+1\n" +
+							"（roll 空格 骰子表示法）\n" +
+							"《一般技能指令》\n" +
+							"假設我要骰觀察，我的觀察有60，就輸入：\n" +
+							"roll 觀察 60\n" +
+							"（roll 空格 技能名稱 空格 技能數值）\n" +
+							"《SanCheck指令》\n" +
+							"假設我san40，然後KP說1/1D8，就輸入：\n" +
+							"roll san 40 1/1D8\n" +
+							"（roll 空格 san 空格 san的數值 空格 sancheck數值）\n" +
+							"《對抗指令》\n" +
+							"假設我要暴力開門，我力量10，門的抵抗力量5，就輸入：\n" +
+							"roll 10 vs 5\n" +
+							"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力"
+				}
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
+					log.Print(err)
+				}
+				
+				
 			case *linebot.TextMessage:
 				
 				commandArray := strings.Split(message.Text, " ")
@@ -82,24 +111,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						imageURL := appBaseURL + "/images/loli.jpg"
 						template := linebot.NewButtonsTemplate(
 							imageURL, "ㄌㄌ", displayName + "有什麼事嗎?",
-							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"),
-							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明", 
-											  	"《一般擲骰指令》\n" +
-											  	"假設我要骰3次20面骰，然後數值再加1，就輸入：\n" +
-												"roll 3D20+1\n" +
-												"（roll 空格 骰子表示法）\n" +
-											  	"《一般技能指令》\n" +
-											  	"假設我要骰觀察，我的觀察有60，就輸入：\n" +
-												"roll 觀察 60\n" +
-												"（roll 空格 技能名稱 空格 技能數值）\n" +
-												"《SanCheck指令》\n" +
-												"假設我san40，然後KP說1/1D8，就輸入：\n" +
-												"roll san 40 1/1D8\n" +
-												"（roll 空格 san 空格 san的數值 空格 sancheck數值）\n" +
-												"《對抗指令》\n" +
-												"假設我要暴力開門，我力量10，門的抵抗力量5，就輸入：\n" +
-												"roll 10 vs 5\n" +
-												"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力"),
+							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", ""),
+							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明",""),
 						)
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
