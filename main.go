@@ -31,6 +31,10 @@ func main() {
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
 	log.Println("Bot:", bot, " err:", err)
+	
+	imageFileServer := http.FileServer(http.Dir("images"))
+	http.HandleFunc("/images/", http.StripPrefix("/images/", imageFileServer).ServeHTTP)
+	
 	http.HandleFunc("/callback", callbackHandler)
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
@@ -57,13 +61,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				commandArray := strings.Split(message.Text, " ")
 				if commandArray[0] != "roll" {
 					if commandArray[0] == "ㄌㄌ" {
-						noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
-						if strings.Contains(commandArray[1], "自我介紹"){
-							noDiceReplyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子! 擲出壞數字也不可以怪我喔!"    						
-						}
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(noDiceReplyString)).Do(); err != nil {
-							log.Print(err)
-						}
+						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
+						//if strings.Contains(commandArray[1], "自我介紹"){
+						//	noDiceReplyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子! 擲出壞數字也不可以怪我喔!"    						
+						//}
+						//if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(noDiceReplyString)).Do(); err != nil {
+						//	log.Print(err)
+						//}
+						
+						
 					}					
 					break
 				}
