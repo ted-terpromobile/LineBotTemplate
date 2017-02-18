@@ -26,9 +26,10 @@ import (
 )
 
 var bot *linebot.Client
-appBaseURL := "https://lolilinebot.herokuapp.com"
+var appBaseURL string
 
 func main() {
+	appBaseURL = "https://lolilinebot.herokuapp.com"
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
 	log.Println("Bot:", bot, " err:", err)
