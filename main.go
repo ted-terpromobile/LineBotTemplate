@@ -71,10 +71,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						//	log.Print(err)
 						//}
 						
-						if source.UserID == "" {
+						if event.Source.UserID == "" {
 							return
 						}							
-						profile, err := app.bot.GetProfile(event.Source.UserID).Do()
+						profile, err := bot.GetProfile(event.Source.UserID).Do()
 						if err != nil {
 							return
 						}
@@ -101,11 +101,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 												"roll 10 vs 5\n" +
 												"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力"),
 						)
-						if _, err := app.bot.ReplyMessage(
+						if _, err := bot.ReplyMessage(
 							replyToken,
 							linebot.NewTemplateMessage("Buttons alt text", template),
 						).Do(); err != nil {
-							return err
+							return
 						}
 					}					
 					break
