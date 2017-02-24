@@ -300,8 +300,9 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 		replyString = replyString + "→" + strconv.Itoa(sum)
 	}
 	
-	replyString = strings.Replace(replyString, "+-", "-",-1)
 	replyString = strings.Replace(replyString, "+)", ")",-1)
-	
+	for ; strings.Contains(replyString, "+-"); {
+		replyString = strings.Replace(replyString, "+-", "-",-1)
+	}
 	return 
 }
