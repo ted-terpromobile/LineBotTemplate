@@ -167,7 +167,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						replyString = replyString + " 自動失敗"
 					}else{
 						plusDiceStr := ""
-						if commandArray[3] != nil {
+						if len(commandArray) > 3 {
 							plusDiceStr = commandArray[3]
 						}
 						plusDice, plusDiceErr := strconv.Atoi(plusDiceStr)
