@@ -306,5 +306,6 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 	replyString = strings.Replace(replyString, "+)", ")",-1)
 	replyString = strings.Replace(replyString, "+→", "→",-1)
 	replyString = strings.Replace(replyString, "+-", "-",-1)
+	replyString = strings.TrimSuffix(replyString, "+")
 	return 
 }
