@@ -174,7 +174,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						for i := 0.0; i < math.Abs(float64(plusDice)); i++ {
 							diceTemp := rand.Intn(100) + 1  
 							replyString = replyString + "\n1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(diceTemp)
-							if (plusDice > 0 && diceTemp > dice) || (plusDice < 0 && diceTemp < dice{) {
+							if (plusDice > 0 && diceTemp > dice) || (plusDice < 0 && diceTemp < dice) {
 								dice = diceTemp
 							}
 						}
