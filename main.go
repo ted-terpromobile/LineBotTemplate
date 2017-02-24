@@ -267,13 +267,22 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 				replyString = ""
 				return
 			}
-			if diceNumber > 1 {
+			plusFlag := true
+			if diceNumber > 1 || diceNumber < 0 {
 				multiFlag = true
 				replyString = replyString + "("
+				if diceNumber < 0 {
+					plusFlag = false
+				}
 			}
+
 			for i :=0 ; i < diceNumber ; i++ {
 				diceEachResult := rand.Intn(diceType) + 1
-				sum = sum + diceEachResult
+				if plusFlag {
+					sum = sum + diceEachResult
+				}else{
+					sum = sum - diceEachResult
+				}
 				replyString = replyString + strconv.Itoa(diceEachResult)
 				if i != (diceNumber - 1) {
 					replyString = replyString + "+"
@@ -291,5 +300,8 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 	if multiFlag {
 		replyString = replyString + "→" + strconv.Itoa(sum)
 	}
+	
+	replyString = strings.Replace(replyString, "+-", "-",-1)
+	
 	return 
 }
