@@ -235,6 +235,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 func parseDiceArray(diceArrayString string) (replyString string,sum int){
 	replyString = diceArrayString + "→"
+	
+	diceArrayString = strings.Replace(diceArrayString, "-", "+-",-1)
+	
 	diceArray := strings.Split(diceArrayString, "+")
 	multiFlag := len(diceArray) > 1
 	sum = 0
