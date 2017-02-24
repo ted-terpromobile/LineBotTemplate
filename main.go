@@ -166,7 +166,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}else if number <= 0 {
 						replyString = replyString + " 自動失敗"
 					}else{
-						plusDice, _ := strconv.Atoi(commandArray[3])
+						plusDice, plusDiceErr := strconv.Atoi(commandArray[3])
+						if !isCheckTypeFlag || plusDiceErr!= nil{
+							plusDice = 0
+						}
 						
 						dice := rand.Intn(100) + 1  
 						replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
