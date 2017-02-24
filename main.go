@@ -284,9 +284,7 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 					sum = sum - diceEachResult
 				}
 				replyString = replyString + strconv.Itoa(diceEachResult)
-				if i != (diceNumber - 1) {
-					replyString = replyString + "+"
-				}
+				replyString = replyString + "+"
 			}
 			if diceNumber > 1 || diceNumber < 1 {
 				replyString = replyString + ")"
@@ -302,6 +300,7 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 	}
 	
 	replyString = strings.Replace(replyString, "+-", "-",-1)
+	replyString = strings.Replace(replyString, "+)", ")",-1)
 	
 	return 
 }
