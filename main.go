@@ -21,6 +21,7 @@ import (
 	"strconv"
 	"math/rand"
 	"time"
+	"math"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -120,9 +121,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						imageURL := appBaseURL + "/images/loli.jpg"
 						template := linebot.NewButtonsTemplate(
 							imageURL, "ㄌㄌ", displayName + "有什麼事嗎?",
-							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", ""),
-							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明",""),
-							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit",""),
+							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "你是誰?"),
+							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明","怎麼擲骰子呢?"),
+							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。"),
 						)
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
@@ -165,10 +166,23 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}else if number <= 0 {
 						replyString = replyString + " 自動失敗"
 					}else{
+						plusDice, _ := strconv.Atoi(commandArray[3])
+						
 						dice := rand.Intn(100) + 1  
 						replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
 						
-						isCheckTypeFlag = isCheckTypeFlag && !(commandArray[1] == "san" && len(commandArray) > 3)
+						for i := 0.0; i < math.Abs(float64(plusDice)); i++ {
+							diceTemp := rand.Intn(100) + 1  
+							replyString = replyString + "\n1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(diceTemp)"
+							if (plusDice > 0 && diceTemp > dice) || (plusDice < 0 && diceTemp < dice{) {
+								dice = diceTemp
+							}
+						}
+						if plusDice != 0 {
+							replyString = replyString + "\n"
+						}
+
+						isCheckTypeFlag = isCheckTypeFlag && commandArray[1] != "san"
 						if dice > number {
 							if isCheckTypeFlag && dice > 95 {
 								replyString = replyString + " 大失敗"
@@ -180,12 +194,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								replyString = replyString + " 大成功"
 							}else if isCheckTypeFlag && dice <= number / 5 {
 								replyString = replyString + " 特別成功"
+							}else if isCheckTypeFlag && dice <= number / 2 {
+								replyString = replyString + " 較成功"
 							}else{
 								replyString = replyString + " 成功"
 							}
 						}
 					
-						if commandArray[1] == "san" && len(commandArray) > 3 {
+						if commandArray[1] == "san"{
 							detectArray := strings.Split(commandArray[3], "/")
 							if len(detectArray) == 2 {
 								replyString = replyString + "\n"
