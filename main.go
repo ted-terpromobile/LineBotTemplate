@@ -99,18 +99,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
 				
-				if strings.Contains(message.Text, "  ") {
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("雙")).Do(); err != nil {
-						log.Print(err)
-					}
-					return;
-				}
-				
-				for ; strings.Contains(message.Text, "  "); {
-					message.Text = strings.Replace(message.Text, "  ", " ",-1)
-				}
+// 				for ; strings.Contains(message.Text, "  "); {
+// 					message.Text = strings.Replace(message.Text, "  ", " ",-1)
+// 				}
 				
 				commandArray := strings.Split(message.Text, " ")
+				
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("debug" + strconv.Itoa(len(commandArray)))).Do(); err != nil {
+						log.Print(err)
+					}
+				
 				if strings.ToLower(commandArray[0]) != "roll" {
 					if commandArray[0] == "ㄌㄌ" {
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
