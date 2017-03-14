@@ -105,9 +105,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("debug" + strconv.Itoa(len(commandArray)))).Do(); err != nil {
-						log.Print(err)
-					}
+				//debug
+				replyString = replyString + "debug:"
+				for _, command := range commandArray {
+					replyString = replyString + command + "/n"
+				}
 				
 				if strings.ToLower(commandArray[0]) != "roll" {
 					if commandArray[0] == "ㄌㄌ" {
