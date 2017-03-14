@@ -99,13 +99,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
 				
-				messageParseText := strings.ToLower(message.Text)
-				for ; strings.Contains(messageParseText, "  "); {
-					messageParseText = strings.Replace(messageParseText, "  ", " ",-1)
+				for ; strings.Contains(message.Text, "  "); {
+					message.Text = strings.Replace(message.Text, "  ", " ",-1)
 				}
 				
-				commandArray := strings.Split(messageParseText, " ")
-				if commandArray[0] != "roll" {
+				commandArray := strings.Split(message.Text, " ")
+				if strings.ToLower(commandArray[0]) != "roll" {
 					if commandArray[0] == "ㄌㄌ" {
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
 						//if strings.Contains(commandArray[1], "自我介紹"){
@@ -142,7 +141,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				rand.Seed(time.Now().UnixNano())
 				var replyString string
 				isCheckTypeFlag := true
-				if len(commandArray) == 4 && commandArray[2] == "vs"{
+				if len(commandArray) == 4 && strings.ToLower(commandArray[2]) == "vs"{
 					selfForce, parseSelfErr := strconv.Atoi(commandArray[1])
 					if parseSelfErr != nil {
 						break
@@ -213,7 +212,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							}
 						}
 					
-						if commandArray[1] == "san"{
+						if strings.Contains(strings.ToLower(commandArray[1]), "san") {
 							detectArray := strings.Split(commandArray[3], "/")
 							if len(detectArray) == 2 {
 								replyString = replyString + "\n"
@@ -248,7 +247,8 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 	sum = 0
 	for index, dice := range diceArray {
 
-		diceForamt := strings.Split(dice, "d")
+		diceLower := strings.ToLower(dice)
+		diceForamt := strings.Split(diceLower, "d")
 		if len(diceForamt) > 2 {
 			replyString = ""
 			return
