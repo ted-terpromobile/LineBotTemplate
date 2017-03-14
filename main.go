@@ -114,14 +114,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					if commandArray[0] == "save" {
 						saveData := []byte(commandArray[1])
 						err := ioutil.WriteFile("/saveData", saveData, 0777)
-						if err != nil{
-							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
-								log.Print(err)
-							}
-						}
-						return
+// 						if err != nil{
+// 							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
+// 								log.Print(err)
+// 							}
+// 						}
+// 						return
 					}
-					if commandArray[0] == "load" {
+					if commandArray[0] == "load" || commandArray[0] == "save" {
 						dataBytes,err := ioutil.ReadFile("/saveData")
 						saveData := "load failed"
 						if err != nil {
