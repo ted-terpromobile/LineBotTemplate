@@ -99,6 +99,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
 				
+				var replyString string
+				
 // 				for ; strings.Contains(message.Text, "  "); {
 // 					message.Text = strings.Replace(message.Text, "  ", " ",-1)
 // 				}
@@ -146,7 +148,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 				rand.Seed(time.Now().UnixNano())
-				var replyString string
 				isCheckTypeFlag := true
 				if len(commandArray) == 4 && strings.ToLower(commandArray[2]) == "vs"{
 					selfForce, parseSelfErr := strconv.Atoi(commandArray[1])
