@@ -200,7 +200,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							replyString = replyString + "\n"
 						}
 
-						isCheckTypeFlag = isCheckTypeFlag && strings.Contains(strings.ToLower(commandArray[1]), "san")
+						isCheckTypeFlag = isCheckTypeFlag && !strings.Contains(strings.ToLower(commandArray[1]), "san")
 						if dice > number {
 							if isCheckTypeFlag && dice > 95 {
 								replyString = replyString + " 大失敗"
@@ -219,7 +219,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							}
 						}
 					
-						if strings.Contains(strings.ToLower(commandArray[1]), "san") && commandArray[3] != "" {
+						if strings.Contains(strings.ToLower(commandArray[1]), "san") && len(commandArray) > 3 {
 							detectArray := strings.Split(commandArray[3], "/")
 							if len(detectArray) == 2 {
 								replyString = replyString + "\n"
