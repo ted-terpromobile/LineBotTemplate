@@ -22,7 +22,7 @@ import (
 	"math/rand"
 	"time"
 	"math"
-	"io/ioutil"
+// 	"io/ioutil"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
