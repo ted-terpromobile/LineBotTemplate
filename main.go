@@ -122,13 +122,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 					if commandArray[0] == "load" {
-						dataBytes,err := ioutil.ReadFile("/saveData")
-						saveData := ""
-						if err != nil {
-							saveData = string(dataBytes)
-						}else{
-							saveData = "load failed"
-						}
+						//dataBytes,err := ioutil.ReadFile("/saveData")
+						saveData := "load failed"
+// 						if err != nil {
+// 							saveData = string(dataBytes)
+// 						}
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(saveData)).Do(); err != nil {
 							log.Print(err)
 						}
