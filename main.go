@@ -98,22 +98,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
-				
 				var replyString string
-				
-				for ; strings.Contains(message.Text, "&#160;"); {
-					message.Text = strings.Replace(message.Text, "&#160;", " ",-1)
-				}
-				for ; strings.Contains(message.Text, "  "); {
-					message.Text = strings.Replace(message.Text, "  ", " ",-1)
-				}
-				
 				commandArray := strings.Split(message.Text, " ")
-				
-// 				for commandIndex, command := range commandArray {
-// 					commandArray[commandIndex] = strings.Trim(command, " ")
-// 				}
-				
 				if strings.ToLower(commandArray[0]) != "roll" {
 					if commandArray[0] == "ㄌㄌ" {
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
@@ -172,6 +158,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}else{
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parseErr.Error())).Do(); err != nil {
+							log.Print(err)
+						}
 						break
 					}
 					if number >= 100 {
