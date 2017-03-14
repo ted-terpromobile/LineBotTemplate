@@ -99,6 +99,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
 				var replyString string
+				
+				// Line的連續空格會變 \u00a0
+				for ; strings.Contains(message.Text, "\u00a0"); {
+					message.Text = strings.Replace(message.Text, "\u00a0", " ",-1)
+				}
+				for ; strings.Contains(message.Text, "  "); {
+					message.Text = strings.Replace(message.Text, "  ", " ",-1)
+				}
+				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
 					if commandArray[0] == "ㄌㄌ" {
@@ -158,9 +167,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}else{
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(parseErr.Error())).Do(); err != nil {
-							log.Print(err)
-						}
 						break
 					}
 					if number >= 100 {
