@@ -113,7 +113,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if strings.ToLower(commandArray[0]) != "roll" {
 					if commandArray[0] == "save" {
 						saveData := []byte(commandArray[1])
-						err := ioutil.WriteFile("/saveData", saveData, 0644)
+						err := ioutil.WriteFile("/saveData", saveData, 0777)
 						if err != nil{
 							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
 								log.Print(err)
@@ -122,7 +122,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 					if commandArray[0] == "load" {
-						dataBytes,err := ioutil.ReadFile("saveData")
+						dataBytes,err := ioutil.ReadFile("/saveData")
 						saveData := ""
 						if err != nil {
 							saveData = string(dataBytes)
