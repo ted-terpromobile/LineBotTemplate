@@ -22,6 +22,7 @@ import (
 	"math/rand"
 	"time"
 	"math"
+	"io/ioutil"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -110,6 +111,29 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
+					if commandArray[0] == "save" {
+						saveData := []byte(commandArray[1])
+						err := ioutil.WriteFile("/saveData", saveData, 0644)
+						if err != nil{
+							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
+								log.Print(err)
+							}
+						}
+						return
+					}
+					if commandArray[0] == "load" {
+						dataBytes,err := ioutil.ReadFile("saveData")
+						saveData := ""
+						if err != nil {
+							saveData := string(dataBytes)
+						}else{
+							saveData := "load failed"
+						}
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(saveData)).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
 					if commandArray[0] == "ㄌㄌ" {
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
 						//if strings.Contains(commandArray[1], "自我介紹"){
