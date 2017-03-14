@@ -125,9 +125,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						dataBytes,err := ioutil.ReadFile("saveData")
 						saveData := ""
 						if err != nil {
-							saveData := string(dataBytes)
+							saveData = string(dataBytes)
 						}else{
-							saveData := "load failed"
+							saveData = "load failed"
 						}
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(saveData)).Do(); err != nil {
 							log.Print(err)
