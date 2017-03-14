@@ -111,27 +111,27 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
-					if commandArray[0] == "save" {
-						saveData := []byte(commandArray[1])
-						err := ioutil.WriteFile("/saveData", saveData, 0777)
-						if err != nil{
-// 							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
-// 								log.Print(err)
-// 							}
-						}
+// 					if commandArray[0] == "save" {
+// 						saveData := []byte(commandArray[1])
+// 						err := ioutil.WriteFile("/saveData", saveData, 0777)
+// 						if err != nil{
+// // 							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
+// // 								log.Print(err)
+// // 							}
+// 						}
+// // 						return
+// 					}
+// 					if commandArray[0] == "load" || commandArray[0] == "save" {
+// 						dataBytes,err := ioutil.ReadFile("/saveData")
+// 						saveData := "load failed"
+// 						if err != nil {
+// 							saveData = "saveData:" +string(dataBytes)
+// 						}
+// 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(saveData)).Do(); err != nil {
+// 							log.Print(err)
+// 						}
 // 						return
-					}
-					if commandArray[0] == "load" || commandArray[0] == "save" {
-						dataBytes,err := ioutil.ReadFile("/saveData")
-						saveData := "load failed"
-						if err != nil {
-							saveData = "saveData:" +string(dataBytes)
-						}
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(saveData)).Do(); err != nil {
-							log.Print(err)
-						}
-						return
-					}
+// 					}
 					if commandArray[0] == "ㄌㄌ" {
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
 						//if strings.Contains(commandArray[1], "自我介紹"){
