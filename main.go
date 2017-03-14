@@ -99,6 +99,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
 				
+				if strings.Contains(message.Text, "  ") {
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("雙")).Do(); err != nil {
+						log.Print(err)
+					}
+					return;
+				}
+				
 				for ; strings.Contains(message.Text, "  "); {
 					message.Text = strings.Replace(message.Text, "  ", " ",-1)
 				}
@@ -193,7 +200,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							replyString = replyString + "\n"
 						}
 
-						isCheckTypeFlag = isCheckTypeFlag && commandArray[1] != "san"
+						isCheckTypeFlag = isCheckTypeFlag && strings.Contains(strings.ToLower(commandArray[1]), "san")
 						if dice > number {
 							if isCheckTypeFlag && dice > 95 {
 								replyString = replyString + " 大失敗"
@@ -212,7 +219,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							}
 						}
 					
-						if strings.Contains(strings.ToLower(commandArray[1]), "san") {
+						if strings.Contains(strings.ToLower(commandArray[1]), "san") && commandArray[3] != "" {
 							detectArray := strings.Split(commandArray[3], "/")
 							if len(detectArray) == 2 {
 								replyString = replyString + "\n"
