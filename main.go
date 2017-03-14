@@ -101,16 +101,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				var replyString string
 				
-// 				for ; strings.Contains(message.Text, "  "); {
-// 					message.Text = strings.Replace(message.Text, "  ", " ",-1)
-// 				}
+				for ; strings.Contains(message.Text, "  "); {
+					message.Text = strings.Replace(message.Text, "  ", " ",-1)
+				}
 				
 				commandArray := strings.Split(message.Text, " ")
 				
-				//debug
-				replyString = replyString + "debug:"
 				for _, command := range commandArray {
-					replyString = replyString + command + "/n"
+					command = strings.Trim(command, " ")
 				}
 				
 				if strings.ToLower(commandArray[0]) != "roll" {
