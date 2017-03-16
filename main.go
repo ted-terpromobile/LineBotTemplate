@@ -66,6 +66,10 @@ func saveText(text string) (*os.File, error) {
 		if err != nil {
 			return nil, err
 		}
+		err = file.Chmod(0777)
+		if err != nil {
+			return nil, err
+		}
 	}
 	defer file.Close()
 	
