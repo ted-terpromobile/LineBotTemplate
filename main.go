@@ -198,8 +198,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							commandArray[2]	= commandCopyArray[i]
 							if i+1 < len(commandCopyArray){
 								commandArray[3]	= commandCopyArray[i+1]
+							} else {
+								commandArray[3] = "0"
 							}
-							commandArray = commandArray[:4]
+							for j := 4 ; j < len(commandArray) ; j++ {
+								commandArray[j] = "0"
+							}
 							break
 						}
 					}
