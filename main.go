@@ -166,17 +166,19 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if strings.ToLower(commandArray[0]) != "roll" {
 					if commandArray[0] == "save" {
 						_,err := saveText(commandArray[1])
+						replySaved := "saved"
 						if err != nil{
-							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
-								log.Print(err)
-							}
+							replySaved = err.Error()
+						}
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
+							log.Print(err)
 						}
 						return
 					}
 					if commandArray[0] == "load" {
 						loadText,err := loadText()
 						if err != nil {
-							loadText = "load failed"
+							loadText = err.Error()
 						}
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(loadText)).Do(); err != nil {
 							log.Print(err)
