@@ -24,7 +24,7 @@ import (
 	"math"
 	
 	"path/filepath"
-	"io/ioutil"
+// 	"io/ioutil"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -42,9 +42,7 @@ func main() {
 	downloadDir = filepath.Join(filepath.Dir(os.Args[0]), "saveData")
 	_, err = os.Stat(downloadDir)
 	if err != nil {
-		if err = os.Mkdir(downloadDir, 0777); err != nil {
-			return nil, err
-		}
+		err = os.Mkdir(downloadDir, 0777)
 	}
 	//
 	
@@ -91,7 +89,7 @@ func loadText() (string, error) {
 		return "", err
 	}
 	readBytes := make([]byte, fileInfo.Size())
-	_.err = file.Read(readBytes)
+	_,err = file.Read(readBytes)
 	if err != nil {
 		return "", err
 	}
