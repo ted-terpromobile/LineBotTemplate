@@ -187,6 +187,22 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						break
 					}
 				}else{
+					//忽略指令2段中的空格
+					commandCopyArray := make([]string, len(commandArray))
+					copy(commandCopyArray, commandArray)
+					for i := 2 ; i < len(commandCopyArray) ; i++ {
+						_, isString := strconv.Atoi(commandCopyArray[i])
+						if isString != nil {
+							commandArray[1] = commandArray[1] + " " + commandCopyArray[i]
+						} else {
+							commandArray[2]	= commandCopyArray[i]
+							if i+1 < len(commandCopyArray){
+								commandArray[3]	= commandCopyArray[i+1]
+							}
+							break
+						}
+					}
+					//
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
 						break
