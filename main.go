@@ -52,7 +52,7 @@ func main() {
 	imageFileServer := http.FileServer(http.Dir("images"))
 	http.HandleFunc("/images/", http.StripPrefix("/images/", imageFileServer).ServeHTTP)
 	
-	LogServer := http.FileServer(downloadDir)
+	LogServer := http.FileServer(http.Dir(downloadDir))
 	http.HandleFunc("/log/", http.StripPrefix("/log/", LogServer).ServeHTTP)
 	
 	http.HandleFunc("/callback", callbackHandler)
