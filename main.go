@@ -22,17 +22,32 @@ import (
 	"math/rand"
 	"time"
 	"math"
-// 	"io/ioutil"
+	
+	"path/filepath"
+	"io/ioutil"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 var bot *linebot.Client
 var appBaseURL string
+var downloadDir string
 
 func main() {
-	appBaseURL = "https://lolilinebot.herokuapp.com"
 	var err error
+	
+	appBaseURL = "https://lolilinebot.herokuapp.com"
+	
+	//
+	downloadDir = filepath.Join(filepath.Dir(os.Args[0]), "saveData")
+	_, err = os.Stat(downloadDir)
+	if err != nil {
+		if err = os.Mkdir(downloadDir, 0777); err != nil {
+			return nil, err
+		}
+	}
+	//
+	
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
 	log.Println("Bot:", bot, " err:", err)
 	
@@ -44,6 +59,46 @@ func main() {
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
 }
+
+//
+func saveText(text string) (*os.File, error) {
+	file, err := os.Open(downloadDir + "/saveText")
+	if err != nil {
+		file, err = os.Create(downloadDir + "/saveText")
+		if err != nil {
+			return nil, err
+		}
+	}
+	defer file.Close()
+	
+	_,err = file.WriteString(text)
+	if err != nil {
+		return nil, err
+	}
+	
+	return file, nil
+}
+
+func loadText() (string, error) {
+	file, err := os.Open(downloadDir + "/saveText")
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	
+	fileInfo, err = file.Stat()
+	if err != nil {
+		return nil, err
+	}
+	readBytes := make([]byte, fileInfo.Size())
+	_.err = file.Read(readBytes)
+	if err != nil {
+		return nil, err
+	}
+	
+	return string(readBytes), nil
+}
+//
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	events, err := bot.ParseRequest(r)
@@ -111,27 +166,25 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
-// 					if commandArray[0] == "save" {
-// 						saveData := []byte(commandArray[1])
-// 						err := ioutil.WriteFile("/saveData", saveData, 0777)
-// 						if err != nil{
-// // 							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
-// // 								log.Print(err)
-// // 							}
-// 						}
-// // 						return
-// 					}
-// 					if commandArray[0] == "load" || commandArray[0] == "save" {
-// 						dataBytes,err := ioutil.ReadFile("/saveData")
-// 						saveData := "load failed"
-// 						if err != nil {
-// 							saveData = "saveData:" +string(dataBytes)
-// 						}
-// 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(saveData)).Do(); err != nil {
-// 							log.Print(err)
-// 						}
-// 						return
-// 					}
+					if commandArray[0] == "save" {
+						_,err := saveText(commandArray[1])
+						if err != nil{
+							if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("saved")).Do(); err != nil {
+								log.Print(err)
+							}
+						}
+						return
+					}
+					if commandArray[0] == "load" {
+						loadText,err := loadText()
+						if err != nil {
+							loadText = "load failed"
+						}
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(saveData)).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
 					if commandArray[0] == "ㄌㄌ" {
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
 						//if strings.Contains(commandArray[1], "自我介紹"){
