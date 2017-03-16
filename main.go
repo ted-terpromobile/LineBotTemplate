@@ -199,6 +199,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							if i+1 < len(commandCopyArray){
 								commandArray[3]	= commandCopyArray[i+1]
 							}
+							commandArray = commandArray[:4]
 							break
 						}
 					}
