@@ -52,6 +52,9 @@ func main() {
 	imageFileServer := http.FileServer(http.Dir("images"))
 	http.HandleFunc("/images/", http.StripPrefix("/images/", imageFileServer).ServeHTTP)
 	
+	LogServer := http.FileServer(downloadDir)
+	http.HandleFunc("/log/", http.StripPrefix("/log/", LogServer).ServeHTTP)
+	
 	http.HandleFunc("/callback", callbackHandler)
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
