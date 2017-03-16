@@ -62,9 +62,9 @@ func main() {
 }
 
 //
-func saveText(text string) (*os.File, error) {
+func saveText(text string, overWrite bool) (*os.File, error) {
 	file, err := os.OpenFile(downloadDir + "/saveText", os.O_APPEND|os.O_WRONLY, 0600)
-	if err != nil {
+	if err != nil || overWrite {
 		file, err = os.Create(downloadDir + "/saveText")
 		if err != nil {
 			return nil, err
@@ -73,6 +73,8 @@ func saveText(text string) (*os.File, error) {
 // 		if err != nil {
 // 			return nil, err
 // 		}
+	}else{
+		text = "\n"+text
 	}
 	defer file.Close()
 	
@@ -171,8 +173,19 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
+					if commandArray[0] == "new" {
+						_,err := saveText(strings.Replace(message.Text, "new ", "", 1),true)
+						replySaved := "saved"
+						if err != nil{
+							replySaved = err.Error()
+						}
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
 					if commandArray[0] == "save" {
-						_,err := saveText(commandArray[1])
+						_,err := saveText(strings.Replace(message.Text, "save ", "", 1),false)
 						replySaved := "saved"
 						if err != nil{
 							replySaved = err.Error()
