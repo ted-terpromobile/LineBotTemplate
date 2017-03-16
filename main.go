@@ -52,8 +52,8 @@ func main() {
 	imageFileServer := http.FileServer(http.Dir("images"))
 	http.HandleFunc("/images/", http.StripPrefix("/images/", imageFileServer).ServeHTTP)
 	
-	LogServer := http.FileServer(http.Dir(downloadDir))
-	http.HandleFunc("/log/", http.StripPrefix("/log/", LogServer).ServeHTTP)
+// 	LogServer := http.FileServer(http.Dir(downloadDir))
+// 	http.HandleFunc("/log/", http.StripPrefix("/log/", LogServer).ServeHTTP)
 	
 	http.HandleFunc("/callback", callbackHandler)
 	port := os.Getenv("PORT")
@@ -63,8 +63,8 @@ func main() {
 
 //
 func saveText(text string) (*os.File, error) {
-// 	file, err := os.Open(downloadDir + "/saveText")
-// 	if err != nil {
+	file, err := os.Open(downloadDir + "/saveText", os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
 		file, err := os.Create(downloadDir + "/saveText")
 		if err != nil {
 			return nil, err
@@ -73,7 +73,7 @@ func saveText(text string) (*os.File, error) {
 // 		if err != nil {
 // 			return nil, err
 // 		}
-// 	}
+	}
 	defer file.Close()
 	
 	_,err = file.WriteString(text)
