@@ -82,18 +82,18 @@ func saveText(text string) (*os.File, error) {
 func loadText() (string, error) {
 	file, err := os.Open(downloadDir + "/saveText")
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer file.Close()
 	
-	fileInfo, err = file.Stat()
+	fileInfo, err := file.Stat()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	readBytes := make([]byte, fileInfo.Size())
 	_.err = file.Read(readBytes)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	
 	return string(readBytes), nil
