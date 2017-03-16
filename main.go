@@ -63,7 +63,7 @@ func main() {
 
 //
 func saveText(text string) (*os.File, error) {
-	file, err := os.Open(downloadDir + "/saveText", os.O_APPEND|os.O_WRONLY, 0600)
+	file, err := os.OpenFile(downloadDir + "/saveText", os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		file, err := os.Create(downloadDir + "/saveText")
 		if err != nil {
