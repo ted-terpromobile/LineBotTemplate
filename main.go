@@ -74,13 +74,13 @@ func saveText(text string, overWrite bool) (*os.File, error) {
 // 			return nil, err
 // 		}
 	}else{
-		text = "\n"+text
+		if text != "" {
+			text = text + "\n"
+		}
 	}
 	defer file.Close()
 	
-	if text != ""{
-		_,err = file.WriteString(text)
-	}
+	_,err = file.WriteString(text)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +197,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						replySaved := "記錄錯誤"
 						_,err := saveText(event.Source.RoomID,false)
 						if err == nil{
-							replySaved = "開始! 現有" + strconv.Itoa(len(wordGameWords)) + "位玩家"					
+							replySaved = "開始! 現有" + strconv.Itoa(len(wordGameWords) - 1) + "位玩家"					
 						}
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
 							log.Print(err)
