@@ -177,9 +177,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				wordGameLose := ""
 				wordGame,err := loadText()
 				wordGameWords := strings.Split(wordGame, "\n")
+				roomIDTimes := 0
 				for _, word := range wordGameWords {
 					if strings.Contains(message.Text, word) && strings.Contains(message.Text, "\""){
 						wordGameLose = word
+					}
+					if event.Source.RoomID == word{
+						roomIDTimes++
 					}
 					if event.Source.RoomID == word && wordGameLose != ""{
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("輸了 禁詞:" + wordGameLose)).Do(); err != nil {
@@ -197,7 +201,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						replySaved := "記錄錯誤"
 						_,err := saveText(event.Source.RoomID,false)
 						if err == nil{
-							replySaved = "開始! 現有" + strconv.Itoa(len(wordGameWords) - 1) + "位玩家"					
+							replySaved = "開始! 現有" + strconv.Itoa(len(wordGameWords) - (1+roomIDTimes)) + "位玩家"					
 						}
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
 							log.Print(err)
