@@ -171,40 +171,94 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					message.Text = strings.Replace(message.Text, "  ", " ",-1)
 				}
 				
+				//wordGame
+				wordGameLose := ""
+				wordGame,err := loadText()
+				wordGameWords := strings.Split(wordGame, "\n")
+				for _, word := range wordGameWords {
+					if strings.Contains(message.Text, word){
+						wordGameLose = word
+					}
+					if event.Source.RoomID == word && wordGameLose != ""{
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("輸了 禁詞:" + wordGameLose)).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
+				}
+				//wordGameend
+				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
-					if commandArray[0] == "new" {
-						_,err := saveText(strings.Replace(message.Text, "new ", "", 1),true)
-						replySaved := "saved"
-						if err != nil{
-							replySaved = err.Error()
+					//wordGame
+					if commandArray[0] == "禁詞遊戲開始" {
+						replySaved := "記錄錯誤"
+						_,err := saveText(event.Source.RoomID,false)
+						if err == nil{
+							replySaved = "開始! 現有" + strconv.Itoa(len(wordGameWords)) + "位玩家"					
 						}
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
 							log.Print(err)
 						}
 						return
 					}
-					if commandArray[0] == "save" {
-						_,err := saveText(strings.Replace(message.Text, "save ", "", 1),false)
-						replySaved := "saved"
-						if err != nil{
-							replySaved = err.Error()
+					if commandArray[0] == "禁詞" {
+						replySaved := "記錄錯誤"
+						if len(commandArray[1]) > 1 {
+							_,err := saveText(commandArray[1],false)
+							if err == nil{
+								replySaved = "記錄成功"
+							}
 						}
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
 							log.Print(err)
 						}
 						return
 					}
-					if commandArray[0] == "load" {
-						loadText,err := loadText()
-						if err != nil {
-							loadText = err.Error()
+					if commandArray[0] == "禁詞遊戲準備" {
+						replySaved := "記錄錯誤"
+						_,err := saveText("",true)
+						if err == nil{
+							replySaved = "私密ㄌㄌ輸入 禁詞 (空格) (你選的禁詞) ，全部玩家輸入完後開始!"
 						}
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(loadText)).Do(); err != nil {
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
 							log.Print(err)
 						}
 						return
 					}
+					//wordGame end
+// 					if commandArray[0] == "new" {
+// 						_,err := saveText(strings.Replace(message.Text, "new ", "", 1),true)
+// 						replySaved := "saved"
+// 						if err != nil{
+// 							replySaved = err.Error()
+// 						}
+// 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
+// 							log.Print(err)
+// 						}
+// 						return
+// 					}
+// 					if commandArray[0] == "save" {
+// 						_,err := saveText(strings.Replace(message.Text, "save ", "", 1),false)
+// 						replySaved := "saved"
+// 						if err != nil{
+// 							replySaved = err.Error()
+// 						}
+// 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
+// 							log.Print(err)
+// 						}
+// 						return
+// 					}
+// 					if commandArray[0] == "load" {
+// 						loadText,err := loadText()
+// 						if err != nil {
+// 							loadText = err.Error()
+// 						}
+// 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(loadText)).Do(); err != nil {
+// 							log.Print(err)
+// 						}
+// 						return
+// 					}
 					if commandArray[0] == "ㄌㄌ" {
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
 						//if strings.Contains(commandArray[1], "自我介紹"){
