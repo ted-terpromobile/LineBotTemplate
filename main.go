@@ -78,7 +78,9 @@ func saveText(text string, overWrite bool) (*os.File, error) {
 	}
 	defer file.Close()
 	
-	_,err = file.WriteString(text)
+	if text != ""{
+		_,err = file.WriteString(text)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +178,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				wordGame,err := loadText()
 				wordGameWords := strings.Split(wordGame, "\n")
 				for _, word := range wordGameWords {
-					if strings.Contains(message.Text, word){
+					if strings.Contains(message.Text, word) && strings.Contains(message.Text, '\"'){
 						wordGameLose = word
 					}
 					if event.Source.RoomID == word && wordGameLose != ""{
