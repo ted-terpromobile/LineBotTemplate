@@ -178,7 +178,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				wordGame,err := loadText()
 				wordGameWords := strings.Split(wordGame, "\n")
 				for _, word := range wordGameWords {
-					if strings.Contains(message.Text, word) && strings.Contains(message.Text, '"'){
+					if strings.Contains(message.Text, word) && strings.Contains(message.Text, """){
 						wordGameLose = word
 					}
 					if event.Source.RoomID == word && wordGameLose != ""{
