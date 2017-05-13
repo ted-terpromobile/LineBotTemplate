@@ -196,6 +196,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
+					if commandArray[0] == "8011" {
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("8011")).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
+					
 					//wordGame
 					if commandArray[0] == "禁詞遊戲開始" {
 						replySaved := "記錄錯誤"
