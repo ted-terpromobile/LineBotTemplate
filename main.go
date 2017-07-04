@@ -196,6 +196,44 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
+					
+					if strings.Contains(strings.ToLower(commandArray[0]), "c") {
+						chooseArray := strings.Split(commandArray[0], "c")
+						if len(chooseArray) != 2{
+							return
+						}
+						number, parseErr := strconv.Atoi(chooseArray[0])
+						if parseErr != nil {
+							replyString = ""
+							return
+						}
+						number2, parseErr2 := strconv.Atoi(chooseArray[1])
+						if parseErr2 != nil {
+							replyString = ""
+							return
+						}
+						if number < number2 {
+							return
+						}
+						
+						replyChosen := ""
+						for i := 1 ; i <= number ; i++{
+							replyChosen = replyChosen + strconv.Itoa(i)
+						}
+						
+						rand.Seed(time.Now().UnixNano())
+						for j := 0 ; j < (number-number2) ; j++{
+							chosenPos := rand.Intn(len(replyChosen))
+							s := []rune(replyChosen)
+							replyChosen = string(append(s[:chosenPos], s[(chosenPos+1):]...)))
+						}
+						
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyChosen)).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
+					
 					if commandArray[0] == "8011" {
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("8011")).Do(); err != nil {
 							log.Print(err)
