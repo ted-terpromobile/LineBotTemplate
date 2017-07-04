@@ -225,7 +225,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						for j := 0 ; j < (number-number2) ; j++{
 							chosenPos := rand.Intn(len(replyChosen))
 							s := []rune(replyChosen)
-							replyChosen = string(append(s[:chosenPos], s[(chosenPos+1):]...)))
+							replyChosen = string(append(s[:chosenPos], s[(chosenPos+1):]...))
 						}
 						
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyChosen)).Do(); err != nil {
