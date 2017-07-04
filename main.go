@@ -216,19 +216,18 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 						
-						replyChosen := ""
-						for i := 1 ; i <= number ; i++{
-							replyChosen = replyChosen + strconv.Itoa(i)
+						numberArray := make([]string, number)
+						for i := 0 ; i < number ; i++{
+							numberArray[i] = strconv.Itoa(i+1)
 						}
 						
 						rand.Seed(time.Now().UnixNano())
 						for j := 0 ; j < (number-number2) ; j++{
 							chosenPos := rand.Intn(len(replyChosen))
-							s := []rune(replyChosen)
-							replyChosen = string(append(s[:chosenPos], s[(chosenPos+1):]...))
+							numberArray = append(numberArray[:chosenPos], numberArray[(chosenPos+1):]...)
 						}
 						
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyChosen)).Do(); err != nil {
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(strings.Join(numberArray, ", "))).Do(); err != nil {
 							log.Print(err)
 						}
 						return
