@@ -223,7 +223,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						
 						rand.Seed(time.Now().UnixNano())
 						for j := 0 ; j < (number-number2) ; j++{
-							chosenPos := rand.Intn(len(replyChosen))
+							chosenPos := rand.Intn(len(numberArray))
 							numberArray = append(numberArray[:chosenPos], numberArray[(chosenPos+1):]...)
 						}
 						
