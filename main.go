@@ -542,7 +542,7 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 				loadData,loadErr := loadText()
 				if loadErr == nil && loadData != ""{
 					diceGM, GMErr := strconv.Atoi(loadData)
-					if GMErr == nil {
+					if GMErr == nil && diceGM <= diceType{
 						diceEachResult = diceGM
 					}
 					saveText("",true)
