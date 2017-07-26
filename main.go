@@ -429,7 +429,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						loadData,loadErr := loadText()
 						if loadErr == nil && loadData != ""{
 							diceGM, GMErr := strconv.Atoi(loadData)
-							if GMErr == nil {
+							if GMErr == nil && diceGM <= 100{
 								dice = diceGM
 							}
 							saveText("",true)
