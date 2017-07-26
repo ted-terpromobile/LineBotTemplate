@@ -429,7 +429,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							if GMErr == nil {
 								dice = diceGM
 							}
-							_,clearErr := saveText("",true)
+							saveText("",true)
 						}
 						//GMend
 						
