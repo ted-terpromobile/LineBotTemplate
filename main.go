@@ -312,7 +312,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					if commandArray[0] == "GM" {
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
-							linebot.NewTemplateMessage(event.Source.UserID, template),
+							linebot.NewTextMessage(event.Source.UserID)
 						).Do(); err != nil {
 							return
 						}
