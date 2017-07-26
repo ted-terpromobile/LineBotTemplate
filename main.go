@@ -310,12 +310,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 // 						return
 // 					}
 					if commandArray[0] == "GM" {
-						if _, err := bot.ReplyMessage(
-							event.ReplyToken,
-							linebot.NewTextMessage(event.Source.UserID)
-						).Do(); err != nil {
-							return
+						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(event.Source.UserID)).Do(); err != nil {
 						}
+						return
 					}
 					
 					if commandArray[0] == "ㄌㄌ" {
