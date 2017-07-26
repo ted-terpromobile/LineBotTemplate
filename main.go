@@ -313,6 +313,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						if event.Source.UserID != "Ue31a3821dcc6848bb9b9e6080cc584ba" {
 							return
 						}
+						if event.Source.GroupID != "" || event.Source.RoomID != ""{
+							return
+						}
 						replySaved := "記錄錯誤"
 						_,err := saveText(commandArray[1],true)
 						if err == nil{
