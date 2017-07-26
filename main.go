@@ -314,7 +314,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 						replySaved := "記錄錯誤"
-						_,err := saveText(commandArray[1],false)
+						_,err := saveText(commandArray[1],true)
 						if err == nil{
 							replySaved = "記錄成功"
 						}
@@ -537,6 +537,18 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 			
 			for i := 0.0 ; i < math.Abs(float64(diceNumber)) ; i++ {
 				diceEachResult := rand.Intn(diceType) + 1
+				
+				//GM
+				loadData,loadErr := loadText()
+				if loadErr == nil && loadData != ""{
+					diceGM, GMErr := strconv.Atoi(loadData)
+					if GMErr == nil {
+						diceEachResult = diceGM
+					}
+					saveText("",true)
+				}
+				//GMend
+				
 				if plusFlag {
 					sum = sum + diceEachResult
 				}else{
