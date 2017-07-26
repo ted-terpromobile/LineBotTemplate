@@ -310,7 +310,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 // 						return
 // 					}
 					if commandArray[0] == "GM" {
-						if _, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(event.Source.UserID)).Do(); err != nil {
+						if event.Source.UserID != "Ue31a3821dcc6848bb9b9e6080cc584ba" {
+							return
+						}
+						replySaved := "記錄錯誤"
+						_,err := saveText(commandArray[1],false)
+						if err == nil{
+							replySaved = "記錄成功"
+						}
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replySaved)).Do(); err != nil {
+							log.Print(err)
 						}
 						return
 					}
@@ -411,7 +420,19 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							plusDice = 0
 						}
 						
-						dice := rand.Intn(100) + 1  
+						dice := rand.Intn(100) + 1
+						
+						//GM
+						loadData,loadErr := loadText()
+						if loadErr == nil && loadData != ""{
+							diceGM, GMErr := strconv.Atoi(loadData)
+							if GMErr == nil {
+								dice = diceGM
+							}
+							_,clearErr := saveText("",true)
+						}
+						//GMend
+						
 						replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
 						
 						for i := 0.0; i < math.Abs(float64(plusDice)); i++ {
