@@ -177,6 +177,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				for ; strings.Contains(message.Text, "\u00a0"); {
 					message.Text = strings.Replace(message.Text, "\u00a0", " ",-1)
 				}
+				for ; strings.Contains(message.Text, "　"); {
+					message.Text = strings.Replace(message.Text, "　", " ",-1)
+				}
 				for ; strings.Contains(message.Text, "  "); {
 					message.Text = strings.Replace(message.Text, "  ", " ",-1)
 				}
