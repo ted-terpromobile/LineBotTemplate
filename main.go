@@ -197,8 +197,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
 					
-					if strings.Contains(strings.ToLower(commandArray[0]), "c") {
+					if strings.Contains(strings.ToLower(commandArray[0]), "c") || strings.Contains(strings.ToLower(commandArray[0]), "p"){
 						chooseArray := strings.Split(commandArray[0], "c")
+						if len(chooseArray) != 2{
+							chooseArray = strings.Split(commandArray[0], "p")
+						}
 						if len(chooseArray) != 2{
 							return
 						}
@@ -225,6 +228,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						for j := 0 ; j < (number-number2) ; j++{
 							chosenPos := rand.Intn(len(numberArray))
 							numberArray = append(numberArray[:chosenPos], numberArray[(chosenPos+1):]...)
+						}
+						
+						if strings.Contains(strings.ToLower(commandArray[0]), "p"){
+							for k:=0 ; k < len(numberArray) ; k++{
+								chosenPos2 := rand.Intn(len(numberArray))
+								temp := numberArray[k]
+								numberArray[k] = numberArray[chosenPos2]
+								numberArray[chosenPos2] = temp
+							}
 						}
 						
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(strings.Join(numberArray, ", "))).Do(); err != nil {
