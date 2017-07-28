@@ -395,9 +395,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				if len(commandArray) == 2 {
 					replyString,_ = parseDiceArray(commandArray[1])
-					if replyString == ""{
-						break
-					}
 				}else{
 					//忽略指令2段中的空格
 					commandCopyArray := make([]string, len(commandArray))
@@ -424,6 +421,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					//
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
+						replyString,_ = parseDiceArray(commandArray[1])
+						if replyString != ""{
+							replyString = "《" + commandArray[1] + "》" + replyString
+						}
 						break
 					}
 					if number >= 100 {
