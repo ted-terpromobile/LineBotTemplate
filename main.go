@@ -421,7 +421,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						if replyString == ""{
 							break
 						}
-						commandArray[1] = strings.Replace(commandArray[1], "我", displayName,-1)
+						if(!strings.Contains(strings.ToLower(commandArray[1]), "我們")){
+							commandArray[1] = strings.Replace(commandArray[1], "我", displayName,-1)
+						}
 						replyString = "《" + commandArray[1] + "》" + replyString
 					}else{
 						if number >= 100 {
@@ -450,8 +452,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								saveText("",true)
 							}
 							//GMend
-							
-							commandArray[1] = strings.Replace(commandArray[1], "我", displayName,-1)
+							if(!strings.Contains(strings.ToLower(commandArray[1]), "我們")){
+								commandArray[1] = strings.Replace(commandArray[1], "我", displayName,-1)
+							}
 							replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
 
 							for i := 0.0; i < math.Abs(float64(plusDice)); i++ {
