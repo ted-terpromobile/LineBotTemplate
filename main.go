@@ -395,6 +395,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				
 				if len(commandArray) == 2 {
 					replyString,_ = parseDiceArray(commandArray[1])
+					if replyString == ""{
+						break
+					}
 				}else{
 					//忽略指令2段中的空格
 					commandCopyArray := make([]string, len(commandArray))
@@ -422,82 +425,83 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
 						replyString,_ = parseDiceArray(commandArray[2])
-						if replyString != ""{
-							replyString = "《" + commandArray[1] + "》" + replyString
+						if replyString == ""{
+							break
 						}
-						break
-					}
-					if number >= 100 {
-						replyString = replyString + " 自動成功"
-					}else if number <= 0 {
-						replyString = replyString + " 自動失敗"
+						replyString = "《" + commandArray[1] + "》" + replyString
 					}else{
-						plusDiceStr := ""
-						if len(commandArray) > 3 {
-							plusDiceStr = commandArray[3]
-						}
-						plusDice, plusDiceErr := strconv.Atoi(plusDiceStr)
-						if plusDiceErr != nil{ //!isCheckTypeFlag ||
-							plusDice = 0
-						}
-						
-						dice := rand.Intn(100) + 1
-						
-						//GM
-						loadData,loadErr := loadText()
-						if loadErr == nil && loadData != ""{
-							diceGM, GMErr := strconv.Atoi(loadData)
-							if GMErr == nil && diceGM <= 100{
-								dice = diceGM
+						if number >= 100 {
+							replyString = replyString + " 自動成功"
+						}else if number <= 0 {
+							replyString = replyString + " 自動失敗"
+						}else{
+							plusDiceStr := ""
+							if len(commandArray) > 3 {
+								plusDiceStr = commandArray[3]
 							}
-							saveText("",true)
-						}
-						//GMend
-						
-						replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
-						
-						for i := 0.0; i < math.Abs(float64(plusDice)); i++ {
-							diceTemp := rand.Intn(100) + 1  
-							replyString = replyString + "\n1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(diceTemp)
-							if (plusDice > 0 && diceTemp < dice) || (plusDice < 0 && diceTemp > dice) {
-								dice = diceTemp
+							plusDice, plusDiceErr := strconv.Atoi(plusDiceStr)
+							if plusDiceErr != nil{ //!isCheckTypeFlag ||
+								plusDice = 0
 							}
-						}
-						if plusDice != 0 {
-							replyString = replyString + "\n"
-						}
 
-						isCheckTypeFlag = isCheckTypeFlag && !strings.Contains(strings.ToLower(commandArray[1]), "san")
-						if dice > number {
-							if isCheckTypeFlag && dice > 95 {
-								replyString = replyString + " 大失敗"
-							}else{
-								replyString = replyString + " 失敗"
-							}
-						} else {
-							if isCheckTypeFlag && dice == 1 {
-								replyString = replyString + " 大成功"
-							}else if isCheckTypeFlag && dice <= number / 5 {
-								replyString = replyString + " 特別成功"
-							}else if isCheckTypeFlag && dice <= number / 2 {
-								replyString = replyString + " 較成功"
-							}else{
-								replyString = replyString + " 成功"
-							}
-						}
-					
-						if strings.Contains(strings.ToLower(commandArray[1]), "san") && len(commandArray) > 3 {
-							detectArray := strings.Split(commandArray[3], "/")
-							if len(detectArray) == 2 {
-								replyString = replyString + "\n"
-								var detectString string
-								if dice > number {
-									detectString = detectArray[1]
-								} else {
-									detectString = detectArray[0]
+							dice := rand.Intn(100) + 1
+
+							//GM
+							loadData,loadErr := loadText()
+							if loadErr == nil && loadData != ""{
+								diceGM, GMErr := strconv.Atoi(loadData)
+								if GMErr == nil && diceGM <= 100{
+									dice = diceGM
 								}
-								diceResultString,diceResultInt := parseDiceArray(detectString)
-								replyString = replyString + diceResultString + "\n《目前san值》" + strconv.Itoa(number) + "→" + strconv.Itoa(number - diceResultInt)
+								saveText("",true)
+							}
+							//GMend
+
+							replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
+
+							for i := 0.0; i < math.Abs(float64(plusDice)); i++ {
+								diceTemp := rand.Intn(100) + 1  
+								replyString = replyString + "\n1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(diceTemp)
+								if (plusDice > 0 && diceTemp < dice) || (plusDice < 0 && diceTemp > dice) {
+									dice = diceTemp
+								}
+							}
+							if plusDice != 0 {
+								replyString = replyString + "\n"
+							}
+
+							isCheckTypeFlag = isCheckTypeFlag && !strings.Contains(strings.ToLower(commandArray[1]), "san")
+							if dice > number {
+								if isCheckTypeFlag && dice > 95 {
+									replyString = replyString + " 大失敗"
+								}else{
+									replyString = replyString + " 失敗"
+								}
+							} else {
+								if isCheckTypeFlag && dice == 1 {
+									replyString = replyString + " 大成功"
+								}else if isCheckTypeFlag && dice <= number / 5 {
+									replyString = replyString + " 特別成功"
+								}else if isCheckTypeFlag && dice <= number / 2 {
+									replyString = replyString + " 較成功"
+								}else{
+									replyString = replyString + " 成功"
+								}
+							}
+
+							if strings.Contains(strings.ToLower(commandArray[1]), "san") && len(commandArray) > 3 {
+								detectArray := strings.Split(commandArray[3], "/")
+								if len(detectArray) == 2 {
+									replyString = replyString + "\n"
+									var detectString string
+									if dice > number {
+										detectString = detectArray[1]
+									} else {
+										detectString = detectArray[0]
+									}
+									diceResultString,diceResultInt := parseDiceArray(detectString)
+									replyString = replyString + diceResultString + "\n《目前san值》" + strconv.Itoa(number) + "→" + strconv.Itoa(number - diceResultInt)
+								}
 							}
 						}
 					}
