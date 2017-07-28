@@ -122,24 +122,32 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, event := range events {
+		displayName := ""
+		if event.Source.UserID != "" {
+			profile, err := bot.GetProfile(event.Source.UserID).Do()
+			if err == nil {
+				displayName = profile.DisplayName
+			}
+		}	
+		
 		if event.Type == linebot.EventTypePostback {
 				replyString := ""
 				if event.Postback.Data == "自我介紹"{
-					replyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
+					replyString = displayName + "您好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
 				}
 				if event.Postback.Data == "說明"{
 					replyString = 	"《一般擲骰指令》\n" +
-							"假設我要骰3次20面骰，然後數值再加1，就輸入：\n" +
+							"假設要骰3次20面骰然後數值再加1，就輸入：\n" +
 							"roll 3D20+1\n" +
 							"（roll 空格 骰子表示法）\n" +
 							"《一般技能指令》\n" +
-							"假設我要骰觀察，我的觀察有60，就輸入：\n" +
+							"假設要骰觀察，觀察技能有60，就輸入：\n" +
 							"roll 觀察 60\n" +
 							"（roll 空格 技能名稱 空格 技能數值）\n" +
 							"《SanCheck指令》\n" +
 							"假設我san40，然後KP說1/1D8，就輸入：\n" +
 							"roll san 40 1/1D8\n" +
-							"（roll 空格 san 空格 san的數值 空格 sancheck數值）\n" +
+							"（roll 空格 包含san字串的文字 空格 san的數值 空格 sancheck數值）\n" +
 							"《對抗指令》\n" +
 							"假設我要暴力開門，我力量10，門的抵抗力量5，就輸入：\n" +
 							"roll 10 vs 5\n" +
@@ -163,7 +171,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {	
 			case *linebot.TextMessage:
-				var replyString string
+				var replyString string		
 				
 				// Line的連續空格會變 \u00a0
 				for ; strings.Contains(message.Text, "\u00a0"); {
@@ -172,7 +180,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				for ; strings.Contains(message.Text, "  "); {
 					message.Text = strings.Replace(message.Text, "  ", " ",-1)
 				}
-				
 				//wordGame
 				//wordGameLose := ""
 				//wordGame,err := loadText()
@@ -244,14 +251,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						}
 						return
 					}
-					
-					if commandArray[0] == "8011" {
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("8011")).Do(); err != nil {
-							log.Print(err)
-						}
-						return
-					}
-					
 					////wordGame
 					//if commandArray[0] == "禁詞遊戲開始" {
 					//	replySaved := "記錄錯誤"
@@ -339,7 +338,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 					
-					if commandArray[0] == "ㄌㄌ" {
+					if commandArray[0] == "ㄌㄌ" || commandArray[0] == "莉亞"{
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
 						//if strings.Contains(commandArray[1], "自我介紹"){
 						//	noDiceReplyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子! 擲出壞數字也不可以怪我喔!"    						
@@ -347,25 +346,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						//if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(noDiceReplyString)).Do(); err != nil {
 						//	log.Print(err)
 						//}
-						
-						displayName := ""
-						if event.Source.UserID != "" {
-							profile, err := bot.GetProfile(event.Source.UserID).Do()
-							if err == nil {
-								displayName = profile.DisplayName
-							}
-						}							
-
 						imageURL := appBaseURL + "/images/loli.jpg"
 						template := linebot.NewButtonsTemplate(
-							imageURL, "ㄌㄌ", displayName + "有什麼事嗎?",
+							imageURL, "莉亞", displayName + "有什麼事嗎?",
 							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "你是誰?"),
 							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明","怎麼擲骰子呢?"),
 							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。"),
 						)
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
-							linebot.NewTemplateMessage("有什麼事嗎?", template),
+							linebot.NewTemplateMessage(displayName + "有什麼事嗎?", template),
 						).Do(); err != nil {
 							return
 						}
@@ -428,6 +418,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						if replyString == ""{
 							break
 						}
+						commandArray[1] = strings.Replace(commandArray[1], "我", displayName,-1)
 						replyString = "《" + commandArray[1] + "》" + replyString
 					}else{
 						if number >= 100 {
@@ -456,7 +447,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								saveText("",true)
 							}
 							//GMend
-
+							
+							commandArray[1] = strings.Replace(commandArray[1], "我", displayName,-1)
 							replyString = "《" + commandArray[1] + "》1D100<=" + strconv.Itoa(number) + "→" + strconv.Itoa(dice)
 
 							for i := 0.0; i < math.Abs(float64(plusDice)); i++ {
