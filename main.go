@@ -374,7 +374,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				rand.Seed(time.Now().UnixNano())
 				isCheckTypeFlag := true
-				if len(commandArray) == 4 && strings.ToLower(commandArray[2]) == "vs"{
+				if len(commandArray) >= 4 && strings.ToLower(commandArray[2]) == "vs"{
 					selfForce, parseSelfErr := strconv.Atoi(commandArray[1])
 					if parseSelfErr != nil {
 						break
@@ -386,6 +386,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					commandArray[1] = "對抗"
 					commandArray[2] = strconv.Itoa(50 + ((selfForce - targetForce) * 5))
 					isCheckTypeFlag = false
+					if len(commandArray) == 5{
+						commandArray[3] = commandArray[4]
+					}else{
+						commandArray[3] = "0"
+					}
 				}
 				
 				if len(commandArray) == 2 {
@@ -431,7 +436,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							plusDiceStr = commandArray[3]
 						}
 						plusDice, plusDiceErr := strconv.Atoi(plusDiceStr)
-						if !isCheckTypeFlag || plusDiceErr != nil{
+						if plusDiceErr != nil{ //!isCheckTypeFlag ||
 							plusDice = 0
 						}
 						
