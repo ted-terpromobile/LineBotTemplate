@@ -563,9 +563,9 @@ func parseDiceArray(diceArrayString string, max bool) (replyString string,sum in
 			}
 			
 			for i := 0.0 ; i < math.Abs(float64(diceNumber)) ; i++ {
-				diceEachResult = diceType
+				diceEachResult := diceType
 				if !max {
-					diceEachResult := rand.Intn(diceType) + 1
+					diceEachResult = rand.Intn(diceType) + 1
 				}
 				//GM
 				loadData,loadErr := loadText()
