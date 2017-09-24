@@ -387,7 +387,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				
 				if len(commandArray) == 2 {
-					replyString,_ = parseDiceArray(commandArray[1])
+					replyString,_ = parseDiceArray(commandArray[1],false)
 					if replyString == ""{
 						break
 					}
@@ -417,7 +417,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					//
 					number, parseErr := strconv.Atoi(commandArray[2])
 					if parseErr != nil {
-						replyString,_ = parseDiceArray(commandArray[2])
+						replyString,_ = parseDiceArray(commandArray[2],false)
 						if replyString == ""{
 							break
 						}
@@ -468,7 +468,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								replyString = replyString + "\n"
 							}
 
-							isCheckTypeFlag = isCheckTypeFlag && !strings.Contains(strings.ToLower(commandArray[1]), "san")
+							//isCheckTypeFlag = isCheckTypeFlag && !strings.Contains(strings.ToLower(commandArray[1]), "san")
 							if dice > number {
 								if isCheckTypeFlag && dice > 95 {
 									replyString = replyString + " 大失敗"
@@ -497,7 +497,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									} else {
 										detectString = detectArray[0]
 									}
-									diceResultString,diceResultInt := parseDiceArray(detectString)
+									max := false
+									if dice > 95 {
+										max = true
+									}
+									diceResultString,diceResultInt := parseDiceArray(detectString,max)
 									replyString = replyString + diceResultString + "\n《目前san值》" + strconv.Itoa(number) + "→" + strconv.Itoa(number - diceResultInt)
 								}
 							}
@@ -513,7 +517,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func parseDiceArray(diceArrayString string) (replyString string,sum int){
+func parseDiceArray(diceArrayString string, max bool) (replyString string,sum int){
 	replyString = diceArrayString + "→"
 	
 	diceArrayString = strings.Replace(diceArrayString, "-", "+-",-1)
@@ -559,8 +563,10 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 			}
 			
 			for i := 0.0 ; i < math.Abs(float64(diceNumber)) ; i++ {
-				diceEachResult := rand.Intn(diceType) + 1
-				
+				diceEachResult = diceType
+				if !max {
+					diceEachResult := rand.Intn(diceType) + 1
+				}
 				//GM
 				loadData,loadErr := loadText()
 				if loadErr == nil && loadData != ""{
@@ -576,6 +582,9 @@ func parseDiceArray(diceArrayString string) (replyString string,sum int){
 					sum = sum + diceEachResult
 				}else{
 					sum = sum - diceEachResult
+				}
+				if max {
+					replyString = replyString + "大失敗取最大值"
 				}
 				replyString = replyString + strconv.Itoa(diceEachResult)
 				replyString = replyString + "+"
