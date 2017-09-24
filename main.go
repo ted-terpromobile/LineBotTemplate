@@ -503,6 +503,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 									}
 									diceResultString,diceResultInt := parseDiceArray(detectString,max)
 									replyString = replyString + diceResultString + "\n《目前san值》" + strconv.Itoa(number) + "→" + strconv.Itoa(number - diceResultInt)
+									if diceResultInt >= 5 {
+										replyString = replyString + "\nsan值一次扣5以上 請骰靈感決定有沒有陷入暫時瘋狂"
+									}
 								}
 							}
 						}
