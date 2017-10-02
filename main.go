@@ -323,6 +323,34 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 // 						}
 // 						return
 // 					}
+					if commandArray[0] == "今日運勢" {
+						runes := []rune(event.Source.UserID + time.Now().Month().String())
+						sum := 0
+						for _, each := range runes {
+							sum = sum + int(each) * time.Now().Day()
+						}
+						sum = sum * time.Now().Year() 
+						
+						replyLuck := displayName + "的今日運勢是 "
+						switch {
+						case sum % 3 == 0:
+							replyLuck = replyLuck + "小吉"
+						case sum % 5 == 0:
+							replyLuck = replyLuck + "中吉"
+						case sum % 7 == 0:
+							replyLuck = replyLuck + "凶"
+						case sum % 2 == 0:
+							replyLuck = replyLuck + "大吉"
+						default:
+							replyLuck = replyLuck + "大凶"
+						}
+						
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
+						
 					if commandArray[0] == "GM" {
 						if event.Source.UserID != "Ue31a3821dcc6848bb9b9e6080cc584ba" {
 							return
