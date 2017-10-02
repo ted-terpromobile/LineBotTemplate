@@ -324,7 +324,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 // 						return
 // 					}
 					if commandArray[0] == "今日運勢" {
-						runes := []rune(event.Source.UserID + time.Now().Month().String())
+						runes := []rune(time.Now().Month().String() + event.Source.UserID)
 						sum := 0
 						for _, each := range runes {
 							sum = sum * int(each) + time.Now().Day() * time.Now().Year()
