@@ -333,16 +333,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						
 						replyLuck := displayName + "的今日運勢是 "
 						switch {
-						case sum % 3 == 0:
-							replyLuck = replyLuck + "小吉"
 						case sum % 5 == 0:
 							replyLuck = replyLuck + "中吉"
-						case sum % 7 == 0:
+						case sum % 4 == 0:
 							replyLuck = replyLuck + "凶"
-						case sum % 2 == 0:
+						case sum % 3 == 0:
 							replyLuck = replyLuck + "大吉"
-						default:
+						case sum % 2 == 0:
 							replyLuck = replyLuck + "大凶"
+						default:
+							replyLuck = replyLuck + "小吉"
 						}
 						
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
