@@ -368,7 +368,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 					
-					if commandArray[0] == "ㄌㄌ" || commandArray[0] == "莉亞"{
+					if commandArray[0] == "普拿疼ㄌㄌ" || commandArray[0] == "莉亞"{
 						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
 						//if strings.Contains(commandArray[1], "自我介紹"){
 						//	noDiceReplyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子! 擲出壞數字也不可以怪我喔!"    						
