@@ -323,7 +323,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 // 						return
 // 					}
 					if commandArray[0] == "被盜"{
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("伊斯人:沒錯! 就是我盜帳號的!")).Do(); err != nil {
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("「對、對不起！莉亞因為好奇盜了一下來玩……真的很對不起！」")).Do(); err != nil {
 							log.Print(err)
 						}
 						return
