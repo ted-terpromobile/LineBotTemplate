@@ -203,7 +203,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				//	}
 				//}
 				//wordGameend
-				
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
 					
@@ -323,6 +322,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 // 						}
 // 						return
 // 					}
+					if commandArray[0] == "被盜"){
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("伊斯人:沒錯! 就是我盜帳號的!").Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
+					
 					if commandArray[0] == "今日運勢" {
 						runes := []rune(time.Now().Month().String() + event.Source.UserID)
 						sum := 0
@@ -479,6 +485,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								saveText("",true)
 							}
 							//GMend
+							if strings.Contains(strings.ToLower(commandArray[1]), "普拿疼"){
+								if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("不可質疑你的普拿疼真神").Do(); err != nil {
+									log.Print(err)
+								}
+								return
+							}
 							if(!strings.Contains(strings.ToLower(commandArray[1]), "我們")){
 								commandArray[1] = strings.Replace(commandArray[1], "我", displayName,-1)
 							}
