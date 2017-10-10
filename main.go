@@ -323,7 +323,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 // 						return
 // 					}
 					if commandArray[0] == "被盜"{
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("伊斯人:沒錯! 就是我盜帳號的!").Do(); err != nil {
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("伊斯人:沒錯! 就是我盜帳號的!")).Do(); err != nil {
 							log.Print(err)
 						}
 						return
@@ -486,7 +486,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							}
 							//GMend
 							if strings.Contains(strings.ToLower(commandArray[1]), "普拿疼"){
-								if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("不可質疑你的普拿疼真神").Do(); err != nil {
+								if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("不可質疑你的普拿疼真神")).Do(); err != nil {
 									log.Print(err)
 								}
 								return
