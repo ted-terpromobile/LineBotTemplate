@@ -344,7 +344,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 								case index % 3 == 0:
 									calNum = now.Year()
 								case index % 3 == 1:
-									calNum = now.Month()
+									calNum = int(now.Month())
 								case index % 3 == 2:
 									calNum = now.Day()
 							}
