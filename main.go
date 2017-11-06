@@ -358,7 +358,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					
 					if commandArray[0] == "今日運勢fix" {
-						replyLuck := strconv.Itoa(time.Now().Year()) + time.Now().Month().String() + strconv.Itoa(time.Now().Day())
+						replyLuck := strconv.Itoa(time.Now().Year()) + time.Now().Month().String() + strconv.Itoa(time.Now().Day()) + strconv.Itoa(time.Now().Hour()) + strconv.Itoa(time.Now().Minute()) + strconv.Itoa(time.Now().Second())
 						
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
 							log.Print(err)
