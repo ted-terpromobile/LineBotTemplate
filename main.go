@@ -330,7 +330,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					
 					if commandArray[0] == "今日運勢" {
-						now := time.Now().LoadLocation("Asia/Taipei")
+						now, err := time.Now().LoadLocation("Asia/Taipei")
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
 						runes := []rune(event.Source.UserID)
 						sum := 0
 						for index, each := range runes {
