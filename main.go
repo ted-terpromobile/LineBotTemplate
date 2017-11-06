@@ -342,11 +342,11 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							calNum := 0
 							switch {
 								case index % 3 == 0:
-									calNum := now.Year()
+									calNum = now.Year()
 								case index % 3 == 1:
-									calNum := now.Month()
+									calNum = now.Month()
 								case index % 3 == 2:
-									calNum := now.Day()
+									calNum = now.Day()
 							}
 							sum = sum + int(each) * calNum 
 						}
