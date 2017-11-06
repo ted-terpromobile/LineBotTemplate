@@ -330,25 +330,35 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					
 					if commandArray[0] == "今日運勢" {
-						runes := []rune(time.Now().Month().String() + event.Source.UserID)
-						sum := 0
-						for _, each := range runes {
-							sum = sum * int(each) + time.Now().Day() * time.Now().Year()
-						}
+// 						runes := []rune(time.Now().Month().String() + event.Source.UserID)
+// 						sum := 0
+// 						for _, each := range runes {
+// 							sum = sum * int(each) + time.Now().Day() * time.Now().Year()
+// 						}
 						
-						replyLuck := displayName + "的今日運勢是 "
-						switch {
-						case sum % 20 == 0:
-							replyLuck = replyLuck + "大凶"
-						case sum % 20 < 5:
-							replyLuck = replyLuck + "凶"
-						case sum % 20 < 10:
-							replyLuck = replyLuck + "中吉"
-						case sum % 20 < 12:
-							replyLuck = replyLuck + "大吉"
-						default:
-							replyLuck = replyLuck + "小吉"
+// 						replyLuck := displayName + "的今日運勢是 "
+						replyLuck := "此功能維修中"
+// 						switch {
+// 						case sum % 20 == 0:
+// 							replyLuck = replyLuck + "大凶"
+// 						case sum % 20 < 5:
+// 							replyLuck = replyLuck + "凶"
+// 						case sum % 20 < 10:
+// 							replyLuck = replyLuck + "中吉"
+// 						case sum % 20 < 12:
+// 							replyLuck = replyLuck + "大吉"
+// 						default:
+// 							replyLuck = replyLuck + "小吉"
+// 						}
+						
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
+							log.Print(err)
 						}
+						return
+					}
+					
+					if commandArray[0] == "今日運勢fix" {
+						replyLuck := strconv.Itoa(time.Now().Year()) + time.Now().Month().String() + strconv.Itoa(time.Now().Day())
 						
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
 							log.Print(err)
