@@ -131,7 +131,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		}	
 		
 		if event.Type == linebot.EventTypeJoin {
-			replyString := "歡迎新人。\n麻煩先至文章區的成員名單簽到串依照指定格式留言簽到，之後稍微翻閱一下會規喔。\n很多東西都尚在整頓中請見諒w"
+			replyString := "您好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
 			if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
 				log.Print(err)
 			}
