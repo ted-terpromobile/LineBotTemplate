@@ -131,7 +131,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		}	
 		
 		if event.Type == linebot.EventTypeJoin {
-			replyString := "您好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
+			replyString := "您好^^，我是Ted跟冰塊的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
 			if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
 				log.Print(err)
 			}
@@ -140,7 +140,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypePostback {
 				replyString := ""
 				if event.Postback.Data == "自我介紹"{
-					replyString = displayName + "您好^^，我是Ted的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
+					replyString = displayName + "您好^^，我是Ted跟冰塊的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
 				}
 				if event.Postback.Data == "說明"{
 					replyString = 	"《一般擲骰指令》\n" +
