@@ -390,17 +390,17 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						replyLuck := displayName + "的" + commandArray[0] + "是 "
 // 						replyLuck := "此功能維修中"
 						switch {
-							case sum % 79 < 1:
+							case sum % 61 < 1:
 								replyLuck = replyLuck + "大凶"
-							case sum % 79 < 4:
+							case sum % 61 < 4:
 								replyLuck = replyLuck + "凶"
-							case sum % 79 < 13:
+							case sum % 61 < 13:
 								replyLuck = replyLuck + "末吉"
-							case sum % 79 < 40:
+							case sum % 61 < 31:
 								replyLuck = replyLuck + "吉"
-							case sum % 79 < 67:
+							case sum % 61 < 49:
 								replyLuck = replyLuck + "小吉"
-							case sum % 79 < 76:
+							case sum % 61 < 58:
 								replyLuck = replyLuck + "中吉"
 							default:
 								replyLuck = replyLuck + "大吉"
@@ -432,30 +432,30 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					
 					if commandArray[0] == "ㄌㄌ" || commandArray[0] == "莉亞"{
 						imageURL := appBaseURL + "/images/loli.jpg"
-// 						template := linebot.NewCarouselTemplate(
-// 							linebot.NewCarouselColumn(
-// 								imageURL, "莉亞", displayName + "有什麼事嗎?",
-// 								linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "ㄌㄌ你是誰?", "ㄌㄌ你是誰?"),
-// 								linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?","怎麼測運勢呢?"),
-// 								linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","怎麼挑排列組合呢?","怎麼挑排列組合呢?"),
-// 								linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。","辛苦了，去休息吧。"),
-// 							),
-// 							linebot.NewCarouselColumn(
-// 								imageURL, "莉亞", "以下是骰子說明喔，因為主要是在玩COC TRPG所以很偏門啦",
-// 								linebot.NewPostbackTemplateAction("一般擲骰指令", "一般擲骰指令","一般擲骰指令","一般擲骰指令"),
-// 								linebot.NewPostbackTemplateAction("一般技能指令", "一般技能指令","一般技能指令","一般技能指令"),
-// 								linebot.NewPostbackTemplateAction("SanCheck指令", "SanCheck指令","SanCheck指令","SanCheck指令"),
-// 								linebot.NewPostbackTemplateAction("對抗指令", "對抗指令","對抗指令","對抗指令"),
-// 							),
-// 						)
-						
-						template := linebot.NewButtonsTemplate(
-							imageURL, "莉亞", displayName + "有什麼事嗎?",
-							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "ㄌㄌ你是誰?", "ㄌㄌ你是誰?"),
-							linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?","怎麼測運勢呢?"),
-							linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","怎麼挑排列組合呢?","怎麼挑排列組合呢?"),
-							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。","辛苦了，去休息吧。"),
+						template := linebot.NewCarouselTemplate(
+							linebot.NewCarouselColumn(
+								imageURL, "莉亞", displayName + "有什麼事嗎?",
+								linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "", "ㄌㄌ你是誰?"),
+								linebot.NewPostbackTemplateAction("測運勢", "測運勢","","怎麼測運勢呢?"),
+								linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","","怎麼挑排列組合呢?"),
+								linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","","辛苦了，去休息吧。"),
+							),
+							linebot.NewCarouselColumn(
+								imageURL, "莉亞", "以下是骰子說明喔，因為主要是在玩COC TRPG所以很偏門啦",
+								linebot.NewPostbackTemplateAction("一般擲骰指令", "一般擲骰指令","","一般擲骰指令"),
+								linebot.NewPostbackTemplateAction("一般技能指令", "一般技能指令","","一般技能指令"),
+								linebot.NewPostbackTemplateAction("SanCheck指令", "SanCheck指令","","SanCheck指令"),
+								linebot.NewPostbackTemplateAction("對抗指令", "對抗指令","","對抗指令"),
+							),
 						)
+						
+// 						template := linebot.NewButtonsTemplate(
+// 							imageURL, "莉亞", displayName + "有什麼事嗎?",
+// 							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "ㄌㄌ你是誰?", "ㄌㄌ你是誰?"),
+// 							linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?","怎麼測運勢呢?"),
+// 							linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","怎麼挑排列組合呢?","怎麼挑排列組合呢?"),
+// 							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。","辛苦了，去休息吧。"),
+// 						)
 						
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
