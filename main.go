@@ -128,18 +128,18 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				displayName = profile.DisplayName
 			}
-// 			if event.Source.GroupID  != "" {
-// 				profile, err = bot.GetGroupMemberProfile(event.Source.GroupID,event.Source.UserID).Do()
-// 				if err == nil {
-// 					displayName = profile.DisplayName
-// 				}
-// 			}
-// 			if event.Source.RoomID    != "" {
-// 				profile, err = bot.GetRoomMemberProfile(event.Source.RoomID,event.Source.UserID).Do()
-// 				if err == nil {
-// 					displayName = profile.DisplayName
-// 				}
-// 			}
+			if event.Source.GroupID  != "" {
+				profile, err = bot.GetGroupMemberProfile(event.Source.GroupID,event.Source.UserID).Do()
+				if err == nil {
+					displayName = profile.DisplayName
+				}
+			}
+			if event.Source.RoomID    != "" {
+				profile, err = bot.GetRoomMemberProfile(event.Source.RoomID,event.Source.UserID).Do()
+				if err == nil {
+					displayName = profile.DisplayName
+				}
+			}
 		}	
 		
 // 		if event.Type == linebot.EventTypeJoin {
@@ -451,10 +451,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						
 						template := linebot.NewButtonsTemplate(
 							imageURL, "莉亞", displayName + "有什麼事嗎?",
-							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "ㄌㄌ你是誰?"),
-							linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?"),
-							linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","怎麼挑排列組合呢?"),
-							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。"),
+							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "ㄌㄌ你是誰?",""),
+							linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?",""),
+							linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","怎麼挑排列組合呢?",""),
+							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。",""),
 						)
 						
 						if _, err := bot.ReplyMessage(
@@ -471,10 +471,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						imageURL := appBaseURL + "/images/loli.jpg"
 						template := linebot.NewButtonsTemplate(
 							imageURL, "莉亞", "以下是骰子說明喔，因為主要是在玩COC TRPG所以很偏門啦",
-							linebot.NewPostbackTemplateAction("一般擲骰指令", "一般擲骰指令","一般擲骰指令"),
-							linebot.NewPostbackTemplateAction("一般技能指令", "一般技能指令","一般技能指令"),
-							linebot.NewPostbackTemplateAction("SanCheck指令", "SanCheck指令","SanCheck指令"),
-							linebot.NewPostbackTemplateAction("對抗指令", "對抗指令","對抗指令"),
+							linebot.NewPostbackTemplateAction("一般擲骰指令", "一般擲骰指令","一般擲骰指令",""),
+							linebot.NewPostbackTemplateAction("一般技能指令", "一般技能指令","一般技能指令",""),
+							linebot.NewPostbackTemplateAction("SanCheck指令", "SanCheck指令","SanCheck指令",""),
+							linebot.NewPostbackTemplateAction("對抗指令", "對抗指令","對抗指令",""),
 						)
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
