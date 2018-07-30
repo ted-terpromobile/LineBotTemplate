@@ -47,7 +47,7 @@ func main() {
 	//
 	
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
-	log.Println("Bot:", bot, " err:", err)
+// 	log.Println("Bot:", bot, " err:", err)
 	
 	imageFileServer := http.FileServer(http.Dir("images"))
 	http.HandleFunc("/images/", http.StripPrefix("/images/", imageFileServer).ServeHTTP)
@@ -128,6 +128,18 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				displayName = profile.DisplayName
 			}
+			if event.Source.GroupID  != "" {
+				profile, err = bot.GetGroupMemberProfile(event.Source.GroupID,event.Source.UserID).Do()
+				if err == nil {
+					displayName = profile.DisplayName
+				}
+			}
+			if event.Source.RoomID    != "" {
+				profile, err = bot.GetRoomMemberProfile(event.Source.RoomID,event.Source.UserID).Do()
+				if err == nil {
+					displayName = profile.DisplayName
+				}
+			}
 		}	
 		
 // 		if event.Type == linebot.EventTypeJoin {
@@ -139,29 +151,43 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		
 		if event.Type == linebot.EventTypePostback {
 				replyString := ""
-				if event.Postback.Data == "自我介紹"{
-					replyString = displayName + "您好^^，我是Ted跟冰塊的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
-				}
-				if event.Postback.Data == "說明"{
-					replyString = 	"《一般擲骰指令》\n" +
-							"假設要骰3次20面骰然後數值再加1，就輸入：\n" +
+				switch event.Postback.Data{
+					case "自我介紹":
+						replyString = displayName + "您好^^，我是Ted跟冰塊的女兒。現在的工作是幫大家擲骰子!擲出壞數字也不可以怪我喔!"
+					case "一般擲骰指令":
+						replyString = 	"《一般擲骰指令》\n" +
+							"骰子表示法: 多少顆D幾面骰 像骰一顆六面骰就是寫成1D6 \n" +
+							"如果想要骰3顆20面骰然後數值再加1，就輸入：\n" +
 							"roll 3D20+1\n" +
-							"（roll 空格 骰子表示法）\n" +
-							"《一般技能指令》\n" +
+							"（roll 空格 骰子表示法"
+					case "一般技能指令":
+						replyString = 	"《一般技能指令》\n" +
 							"假設要骰觀察，觀察技能有60，就輸入：\n" +
 							"roll 觀察 60\n" +
 							"（roll 空格 技能名稱 空格 技能數值）\n" +
-							"《SanCheck指令》\n" +
-							"假設我san40，然後KP說1/1D8，就輸入：\n" +
+							"如果KP採用懲罰/獎勵骰的話，比如太暗懲罰1顆: \n" +
+							"roll 觀察 60 -1\n" +
+							"（roll 空格 技能名稱 空格 技能數值 空格 -懲罰/+獎勵的顆數）"
+					case "SanCheck指令":
+						replyString = 	"《SanCheck指令》\n" +
+							"假設san值40，然後KP說SanCheck 1/1D8，就輸入：\n" +
 							"roll san 40 1/1D8\n" +
-							"（roll 空格 包含san字串的文字 空格 san的數值 空格 sancheck數值）\n" +
-							"《對抗指令》\n" +
-							"假設我要暴力開門，我力量10，門的抵抗力量5，就輸入：\n" +
+							"（roll 空格 包含san字串的文字 空格 當前san值 空格 sancheck格式）"
+					case "對抗指令":
+						replyString = "《對抗指令》\n" +
+							"假設要暴力破門，自己力量10，門的抵抗5，就輸入：\n" +
 							"roll 10 vs 5\n" +
-							"（roll 空格 你的力量 空格 vs 空格 另一個抵抗力）"
-				}
-				if event.Postback.Data == "exit"{
-					replyString = "掰掰!"
+							"（roll 空格 自己的對抗屬性 空格 vs 空格 對方的對抗屬性）"
+					case "exit":
+						replyString = "掰掰!"
+					case "測運勢":
+						replyString = "只要隨便輸入帶有[今日]跟[運勢]兩組詞的句子，我就會幫你算出那種運勢喔\n" +
+							"順序為：大吉－中吉－小吉－吉－末吉－凶－大凶\n" +
+							"同一種運勢同一天都是一樣的結果喔 請過半夜0:00(台灣時間)再試試吧"
+					case "挑排列組合":
+						replyString = "從5個裡面挑2個，就輸入：5c2\n" +
+							"從7個裡面挑4個排順序，就輸入：7p4\n" +
+							"以此類推"
 				}
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyString)).Do(); err != nil {
 					log.Print(err)
@@ -336,14 +362,17 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 					
-					if commandArray[0] == "今日運勢" {
+					if strings.Contains(commandArray[0], "運勢") && strings.Contains(commandArray[0], "今日") {
 						taipeiLocation, err := time.LoadLocation("Asia/Taipei")
 						if err != nil {
 							fmt.Println(err)
 							return
 						}
 						now := time.Now().In(taipeiLocation)
-						runes := []rune(event.Source.UserID)
+						
+						luckyText := strings.Replace(commandArray[0], "運勢", "",-1)
+						luckyText := strings.Replace(luckyText, "今日", "",-1)
+						runes := []rune(luckyText + event.Source.UserID)
 						sum := 0
 						for index, each := range runes {
 							calNum := 0
@@ -358,19 +387,23 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							sum = sum + int(each) * calNum 
 						}
 						
-						replyLuck := displayName + "的今日運勢是 "
+						replyLuck := displayName + "的" + commandArray[0] + "是 "
 // 						replyLuck := "此功能維修中"
 						switch {
-							case sum % 20 == 0:
+							case sum % 79 < 1:
 								replyLuck = replyLuck + "大凶"
-							case sum % 20 < 5:
+							case sum % 79 < 4:
 								replyLuck = replyLuck + "凶"
-							case sum % 20 < 10:
-								replyLuck = replyLuck + "中吉"
-							case sum % 20 < 12:
-								replyLuck = replyLuck + "大吉"
-							default:
+							case sum % 79 < 13:
+								replyLuck = replyLuck + "末吉"
+							case sum % 79 < 40:
+								replyLuck = replyLuck + "吉"
+							case sum % 79 < 67:
 								replyLuck = replyLuck + "小吉"
+							case sum % 79 < 76:
+								replyLuck = replyLuck + "中吉"
+							default:
+								replyLuck = replyLuck + "大吉"
 						}
 						
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
@@ -398,19 +431,22 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					
 					if commandArray[0] == "ㄌㄌ" || commandArray[0] == "莉亞"{
-						//noDiceReplyString := "你說的話是什麼意思? 對不起，我聽不懂QAQ"
-						//if strings.Contains(commandArray[1], "自我介紹"){
-						//	noDiceReplyString = "大家好^^，我是Ted的女兒。現在的工作是幫大家擲骰子! 擲出壞數字也不可以怪我喔!"    						
-						//}
-						//if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(noDiceReplyString)).Do(); err != nil {
-						//	log.Print(err)
-						//}
 						imageURL := appBaseURL + "/images/loli.jpg"
-						template := linebot.NewButtonsTemplate(
-							imageURL, "莉亞", displayName + "有什麼事嗎?",
-							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "你是誰?"),
-							linebot.NewPostbackTemplateAction("怎麼擲骰子呢?", "說明","怎麼擲骰子呢?"),
-							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。"),
+						template := linebot.NewCarouselTemplate(
+							linebot.NewCarouselColumn(
+								imageURL, "莉亞", displayName + "有什麼事嗎?",
+								linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "ㄌㄌ你是誰?"),
+								linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?"),
+								linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","怎麼挑排列組合呢?"),
+								linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。")
+							),
+							linebot.NewCarouselColumn(
+								imageURL, "莉亞", "以下是骰子說明喔，因為主要是在玩COC TRPG所以很偏門啦",
+								linebot.NewPostbackTemplateAction("一般擲骰指令", "一般擲骰指令", "一般擲骰指令"),
+								linebot.NewPostbackTemplateAction("一般技能指令", "一般技能指令","一般技能指令"),
+								linebot.NewPostbackTemplateAction("SanCheck指令", "SanCheck指令","SanCheck指令"),
+								linebot.NewPostbackTemplateAction("對抗指令", "對抗指令","對抗指令")
+							)	
 						)
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
