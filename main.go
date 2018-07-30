@@ -453,6 +453,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							imageURL, "莉亞", displayName + "有什麼事嗎?",
 							linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "ㄌㄌ你是誰?"),
 							linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?"),
+							linebot.NewPostbackTemplateAction("測運勢", "測運勢","怎麼測運勢呢?"),
 							linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","辛苦了，去休息吧。"),
 						)
 						
