@@ -449,6 +449,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							event.ReplyToken,
 							linebot.NewTemplateMessage(displayName + "有什麼事嗎?", template),
 						).Do(); err != nil {
+							bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(err)).Do()
 							return
 						}
 					}					
