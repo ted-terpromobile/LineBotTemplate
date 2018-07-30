@@ -435,16 +435,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						template := linebot.NewCarouselTemplate(
 							linebot.NewCarouselColumn(
 								imageURL, "莉亞", displayName + "有什麼事嗎?",
-								linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", nil,"ㄌㄌ你是誰?"),
-								linebot.NewPostbackTemplateAction("測運勢", "測運勢",nil,"怎麼測運勢呢?"),
-								linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合",nil,"怎麼挑排列組合呢?"),
-								linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit",nil,"辛苦了，去休息吧。")),
+								linebot.NewPostbackTemplateAction("你是誰?", "自我介紹", "","ㄌㄌ你是誰?"),
+								linebot.NewPostbackTemplateAction("測運勢", "測運勢","","怎麼測運勢呢?"),
+								linebot.NewPostbackTemplateAction("挑排列組合", "挑排列組合","","怎麼挑排列組合呢?"),
+								linebot.NewPostbackTemplateAction("辛苦了，去休息吧。", "exit","","辛苦了，去休息吧。")),
 							linebot.NewCarouselColumn(
 								imageURL, "莉亞", "以下是骰子說明喔，因為主要是在玩COC TRPG所以很偏門啦",
-								linebot.NewPostbackTemplateAction("一般擲骰指令", "一般擲骰指令", nil,"一般擲骰指令"),
-								linebot.NewPostbackTemplateAction("一般技能指令", "一般技能指令",nil,"一般技能指令"),
-								linebot.NewPostbackTemplateAction("SanCheck指令", "SanCheck指令",nil,"SanCheck指令"),
-								linebot.NewPostbackTemplateAction("對抗指令", "對抗指令",nil,"對抗指令")))
+								linebot.NewPostbackTemplateAction("一般擲骰指令", "一般擲骰指令", "","一般擲骰指令"),
+								linebot.NewPostbackTemplateAction("一般技能指令", "一般技能指令","","一般技能指令"),
+								linebot.NewPostbackTemplateAction("SanCheck指令", "SanCheck指令","","SanCheck指令"),
+								linebot.NewPostbackTemplateAction("對抗指令", "對抗指令","","對抗指令")))
 						if _, err := bot.ReplyMessage(
 							event.ReplyToken,
 							linebot.NewTemplateMessage(displayName + "有什麼事嗎?", template),
