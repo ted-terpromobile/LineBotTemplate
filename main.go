@@ -239,6 +239,56 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				commandArray := strings.Split(message.Text, " ")
 				if strings.ToLower(commandArray[0]) != "roll" {
 					
+					if strings.Contains(commandArray[0], "運勢") && strings.Contains(commandArray[0], "今日") {
+						taipeiLocation, err := time.LoadLocation("Asia/Taipei")
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
+						now := time.Now().In(taipeiLocation)
+						
+						luckyText := strings.Replace(commandArray[0], "運勢", "",-1)
+						luckyText = strings.Replace(luckyText, "今日", "",-1)
+						runes := []rune(event.Source.UserID + luckyText)
+						sum := 0
+						for index, each := range runes {
+							calNum := 0
+							switch {
+								case index % 3 == 0:
+									calNum = now.Year()
+								case index % 3 == 1:
+									calNum = int(now.Month())
+								case index % 3 == 2:
+									calNum = now.Day()
+							}
+							sum = sum + int(each) * calNum 
+						}
+						
+						replyLuck := displayName + "的" + commandArray[0] + "是 "
+// 						replyLuck := "此功能維修中"
+						switch {
+							case sum % 61 < 1:
+								replyLuck = replyLuck + "大凶"
+							case sum % 61 < 4:
+								replyLuck = replyLuck + "凶"
+							case sum % 61 < 13:
+								replyLuck = replyLuck + "末吉"
+							case sum % 61 < 31:
+								replyLuck = replyLuck + "吉"
+							case sum % 61 < 49:
+								replyLuck = replyLuck + "小吉"
+							case sum % 61 < 58:
+								replyLuck = replyLuck + "中吉"
+							default:
+								replyLuck = replyLuck + "大吉"
+						}
+						
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
+							log.Print(err)
+						}
+						return
+					}
+					
 					if strings.Contains(strings.ToLower(commandArray[0]), "c") || strings.Contains(strings.ToLower(commandArray[0]), "p"){
 						chooseArray := strings.Split(commandArray[0], "c")
 						if len(chooseArray) != 2{
@@ -362,55 +412,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 					
-					if strings.Contains(commandArray[0], "運勢") && strings.Contains(commandArray[0], "今日") {
-						taipeiLocation, err := time.LoadLocation("Asia/Taipei")
-						if err != nil {
-							fmt.Println(err)
-							return
-						}
-						now := time.Now().In(taipeiLocation)
-						
-						luckyText := strings.Replace(commandArray[0], "運勢", "",-1)
-						luckyText = strings.Replace(luckyText, "今日", "",-1)
-						runes := []rune(event.Source.UserID + luckyText)
-						sum := 0
-						for index, each := range runes {
-							calNum := 0
-							switch {
-								case index % 3 == 0:
-									calNum = now.Year()
-								case index % 3 == 1:
-									calNum = int(now.Month())
-								case index % 3 == 2:
-									calNum = now.Day()
-							}
-							sum = sum + int(each) * calNum 
-						}
-						
-						replyLuck := displayName + "的" + commandArray[0] + "是 "
-// 						replyLuck := "此功能維修中"
-						switch {
-							case sum % 61 < 1:
-								replyLuck = replyLuck + "大凶"
-							case sum % 61 < 4:
-								replyLuck = replyLuck + "凶"
-							case sum % 61 < 13:
-								replyLuck = replyLuck + "末吉"
-							case sum % 61 < 31:
-								replyLuck = replyLuck + "吉"
-							case sum % 61 < 49:
-								replyLuck = replyLuck + "小吉"
-							case sum % 61 < 58:
-								replyLuck = replyLuck + "中吉"
-							default:
-								replyLuck = replyLuck + "大吉"
-						}
-						
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyLuck)).Do(); err != nil {
-							log.Print(err)
-						}
-						return
-					}
+
 						
 					if commandArray[0] == "GM" {
 						if event.Source.UserID != "Ue31a3821dcc6848bb9b9e6080cc584ba" {
