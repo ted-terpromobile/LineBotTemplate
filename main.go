@@ -237,7 +237,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				//}
 				//wordGameend
 				commandArray := strings.Split(message.Text, " ")
-				if strings.ToLower(commandArray[0]) != "roll" {
+				if strings.ToLower(commandArray[0]) != "roll" || strings.ToLower(commandArray[0]) != "/r" {
 					
 					if strings.Contains(commandArray[0], "運勢") && strings.Contains(commandArray[0], "今日") {
 						taipeiLocation, err := time.LoadLocation("Asia/Taipei")
